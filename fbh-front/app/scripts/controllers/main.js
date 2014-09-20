@@ -9,5 +9,5 @@
  */
 angular.module('fbhFrontApp')
   .controller('MainCtrl', function ($scope) {
-  	$scope.a = 'aaa';
+  	$scope.a = 'a';
   });
