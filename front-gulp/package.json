@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-angular-templatecache": "^1.4.1",
+    "gulp-concat": "^2.1.7",
+    "gulp-connect": "latest",
+    "gulp-htmlmin": "^0.2.0",
+    "gulp-load-plugins": "^0.6.0",
+    "gulp-uglify": "^0.2.1",
+    "gulp-util": "^3.0.1",
+    "proxy-middleware": "^0.5.1"
+  }
+}
