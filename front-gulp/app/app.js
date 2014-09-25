@@ -6,7 +6,7 @@ angular.module('core', [
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'modules/core/views/main.core.view.html',
+        templateUrl: 'modules/core/templates/main.core.tpl.html',
         controller: 'MainCtrl'
       })
       .otherwise({

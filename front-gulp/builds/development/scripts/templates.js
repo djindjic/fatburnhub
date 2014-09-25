@@ -1,1 +1,1 @@
-angular.module("core").run(["$templateCache", function($templateCache) {$templateCache.put("modules/core/views/main.core.view.html","main");}]);
+angular.module("core").run(["$templateCache", function($templateCache) {$templateCache.put("modules/core/templates/main.core.tpl.html","main");}]);
