@@ -2,6 +2,8 @@ var fs         = require('fs'),
     gulp       = require('gulp'),
     bowerFiles = require('main-bower-files'),
     connect    = require('gulp-connect'),
+    url        = require('url'),
+    proxy      = require('proxy-middleware'),
     $          = require('gulp-load-plugins')();
 
 function getModules() {
@@ -29,8 +31,21 @@ gulp.task('connect', function(){
     livereload: true,
     middleware: function(connect, o) {
       return [ (function() {
-          var url = require('url');
-          var proxy = require('proxy-middleware');
+          var options = url.parse('http://localhost:3000');
+          options.route = '/api/';
+          return proxy(options);
+      })() ];
+    }
+  });
+});
+
+gulp.task('connect-production', function(){
+  connect.server({
+    root: ['./builds/production'],
+    port: 8000,
+    livereload: true,
+    middleware: function(connect, o) {
+      return [ (function() {
           var options = url.parse('http://localhost:3000');
           options.route = '/api/';
           return proxy(options);
@@ -49,15 +64,21 @@ gulp.task('html', function () {
 
 gulp.task('scripts', function() {
   return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
+    .pipe($.jshint())
     .pipe($.concat('app.js'))
     .pipe(gulp.dest('./builds/development/scripts'))
+    .pipe($.uglify())
+    .pipe(gulp.dest('./builds/production/scripts'))
     .pipe(connect.reload());
 });
 
 gulp.task('vendor', function() {
   return gulp.src(['vendor/**/*.js'].concat(bowerFiles()))
     .pipe($.concat('lib.js'))
-    .pipe(gulp.dest('./builds/development/scripts'));
+    .pipe(gulp.dest('./builds/development/scripts'))
+    .pipe($.uglify())
+    .pipe(gulp.dest('./builds/production/scripts'))
+    .pipe(connect.reload());
 });
 
 gulp.task('templates', function () {
@@ -67,6 +88,8 @@ gulp.task('templates', function () {
                 module: module
               }))
             .pipe(gulp.dest('./builds/development/scripts'))
+            .pipe($.uglify())
+            .pipe(gulp.dest('./builds/production/scripts'))
             .pipe(connect.reload());
     })
 });
@@ -78,4 +101,4 @@ gulp.task('watch', function () {
   gulp.watch(['./bower.json'], ['vendor']);
 });
 
-gulp.task('default', ['connect', 'watch', 'vendor', 'scripts', 'html', 'templates']);
+gulp.task('default', ['connect', 'connect-production', 'watch', 'vendor', 'scripts', 'html', 'templates']);

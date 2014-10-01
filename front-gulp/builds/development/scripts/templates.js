@@ -1,2 +1,2 @@
 angular.module("core").run(["$templateCache", function($templateCache) {$templateCache.put("modules/core/templates/home.core.tpl.html","home");
-$templateCache.put("modules/core/templates/main.core.tpl.html","main");}]);
+$templateCache.put("modules/core/templates/main.core.tpl.html","main\n<div ng-controller=\"MainCtrl as main\">\n	<input type=\"text\" ng-model=\"main.name\" />\n</div>\n");}]);

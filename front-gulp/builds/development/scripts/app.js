@@ -21,46 +21,70 @@ var ApplicationConfiguration = (function() {
 		registerModule: registerModule
 	};
 })();
-//Start by defining the main module and adding the module dependencies
-angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
+(function() {
+	'use strict';
 
-// Setting HTML5 Location Mode
-// angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
-//   function($locationProvider) {
-//     $locationProvider.hashPrefix('!');
-//   }
-// ]);
+	//Start by defining the main module and adding the module dependencies
+	angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
-//Then define the init function for starting up the application
-angular.element(document).ready(function() {
-  //Fixing facebook bug with redirect
-  if (window.location.hash === '#_=_') window.location.hash = '#!';
+	// Setting HTML5 Location Mode
+	// angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
+	//   function($locationProvider) {
+	//     $locationProvider.hashPrefix('!');
+	//   }
+	// ]);
 
-  //Then init the app
-  angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
-});
+	//Then define the init function for starting up the application
+	angular.element(document).ready(function() {
+	  //Fixing facebook bug with redirect
+	  if (window.location.hash === '#_=_') window.location.hash = '#';
+
+	  //Then init the app
+	  angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
+	});
+})();
 ApplicationConfiguration.registerModule('core');
-angular.module('core').config(['$routeProvider',
-  function($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'modules/core/templates/main.core.tpl.html',
-        controller: 'MainCtrl'
-      })
-      .when('/home', {
-        templateUrl: 'modules/core/templates/home.core.tpl.html',
-        controller: 'HomeCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  }
-]);
-angular.module('core')
-  .controller('HomeCtrl', function ($scope) {
-  	$scope.a = 'a';
-  });
-angular.module('core')
-  .controller('MainCtrl', function ($scope) {
-  	$scope.a = 'a';
-  });
+(function() {
+  'use strict';
+
+  angular.module('core').config(['$routeProvider',
+    function($routeProvider) {
+      $routeProvider
+        .when('/', {
+          templateUrl: 'modules/core/templates/main.core.tpl.html',
+          controller: 'MainCtrl'
+        })
+        .when('/home', {
+          templateUrl: 'modules/core/templates/home.core.tpl.html',
+          controller: 'HomeCtrl'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    }
+  ]);
+})();
+(function() {
+	'use strict';
+
+	angular
+	  .module('core')
+	  .controller('HomeCtrl', ['$scope', HomeCtrl]);
+
+	function HomeCtrl($scope) {
+	  	$scope.a = 'a';
+	  }
+})();
+(function() {
+	'use strict';
+
+	angular
+	  .module('core')
+	  .controller('MainCtrl', MainCtrl);
+
+	function MainCtrl() {
+		var vm = this;
+		
+	  	this.name = 'a';
+	  }
+})();
