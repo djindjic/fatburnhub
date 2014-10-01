@@ -1,2 +1,2 @@
-angular.module("core").run(["$templateCache", function($templateCache) {$templateCache.put("modules/core/templates/home.core.tpl.html","home");
-$templateCache.put("modules/core/templates/main.core.tpl.html","main\n<div ng-controller=\"MainCtrl as main\">\n	<input type=\"text\" ng-model=\"main.name\" />\n</div>\n");}]);
+angular.module("core").run(["$templateCache", function($templateCache) {$templateCache.put("modules/core/templates/home.core.tpl.html","home\n<div ng-controller=\"MainCtrl as main\">\n	<input type=\"text\" ng-model=\"main.name\" />\n</div>");
+$templateCache.put("modules/core/templates/main.core.tpl.html","<h1>\nFat Burn Hub\n</h1>");}]);
