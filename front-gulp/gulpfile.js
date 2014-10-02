@@ -92,9 +92,11 @@ gulp.task('html', function () {
 
 gulp.task('scripts', function() {
   return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('default'))
-    .pipe($.concat('app.js'))
+    .pipe($.sourcemaps.init())
+      .pipe($.jshint())
+      .pipe($.jshint.reporter('default'))
+      .pipe($.concat('app.js'))
+    .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./builds/development/scripts'))
     .pipe($.uglify())
     .pipe(gulp.dest('./builds/production/scripts'))
@@ -103,7 +105,9 @@ gulp.task('scripts', function() {
 
 gulp.task('styles', function() {
   return gulp.src(['app/**/styles/*.css'])
-    .pipe($.concat('app.css'))
+    .pipe($.sourcemaps.init())
+      .pipe($.concat('app.css'))
+    .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./builds/development/styles'))
     .pipe($.minifyCss({
       keepSpecialComments: 0
@@ -131,10 +135,10 @@ gulp.task('vendor-scripts', function() {
 gulp.task('vendor-styles', function() {
   return gulp.src(['vendor/**/styles/*'].concat(bowerFiles.styles()))
     .pipe($.concat('lib.css'))
-    .pipe(gulp.dest('./builds/development/styles'))
     .pipe($.minifyCss({
       keepSpecialComments: 0
     }))
+    .pipe(gulp.dest('./builds/development/styles'))
     .pipe(gulp.dest('./builds/production/styles'))
     .pipe(connect.reload());
 });

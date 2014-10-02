@@ -8,9 +8,13 @@
           templateUrl: 'main.html',
           controller: 'MainCtrl'
         })
-        .when('/home', {
-          templateUrl: 'home.html',
-          controller: 'HomeCtrl'
+        .when('/about', {
+          templateUrl: 'about.html',
+          controller: 'AboutCtrl'
+        })
+        .when('/contact', {
+          templateUrl: 'contact.html',
+          controller: 'ContactCtrl'
         })
         .otherwise({
           redirectTo: '/'
