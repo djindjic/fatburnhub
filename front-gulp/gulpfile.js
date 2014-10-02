@@ -42,7 +42,7 @@ gulp.task('connect', function(){
 gulp.task('connect-production', function(){
   connect.server({
     root: ['./builds/production'],
-    port: 8000,
+    port: 9001,
     livereload: true,
     middleware: function(connect, o) {
       return [ (function() {
@@ -57,7 +57,15 @@ gulp.task('connect-production', function(){
 gulp.task('html', function () {
   return gulp.src('./app/*.html')
     .pipe(gulp.dest('./builds/development'))
-    .pipe($.htmlmin({collapseWhitespace: true}))
+    .pipe($.htmlmin({
+      collapseWhitespace: true,
+      conservativeCollapse: true,
+      minifyJS: true,
+      minifyCSS: true,
+      useShortDoctype: true,
+      removeEmptyAttributes: true,
+      removeComments: true
+    }))
     .pipe(gulp.dest('./builds/production'))
     .pipe(connect.reload());
 });
@@ -65,6 +73,7 @@ gulp.task('html', function () {
 gulp.task('scripts', function() {
   return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
     .pipe($.jshint())
+    .pipe($.jshint.reporter('default'))
     .pipe($.concat('app.js'))
     .pipe(gulp.dest('./builds/development/scripts'))
     .pipe($.uglify())
@@ -84,8 +93,21 @@ gulp.task('vendor', function() {
 gulp.task('templates', function () {
     getModules().forEach(function(module) {
         gulp.src('app/**/templates/*.html')
+            .pipe($.htmlmin({
+              collapseWhitespace: true,
+              conservativeCollapse: true,
+              minifyJS: true,
+              minifyCSS: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeComments: true
+            }))
             .pipe($.angularTemplatecache({
-                module: module
+                module: module,
+                base: function(file) {
+                    var splitPath = file.relative.split('/');
+                    return splitPath[splitPath.length - 1];
+                }
               }))
             .pipe(gulp.dest('./builds/development/scripts'))
             .pipe($.uglify())

@@ -5,11 +5,11 @@
     function($routeProvider) {
       $routeProvider
         .when('/', {
-          templateUrl: 'modules/core/templates/main.core.tpl.html',
+          templateUrl: 'main.html',
           controller: 'MainCtrl'
         })
         .when('/home', {
-          templateUrl: 'modules/core/templates/home.core.tpl.html',
+          templateUrl: 'home.html',
           controller: 'HomeCtrl'
         })
         .otherwise({
