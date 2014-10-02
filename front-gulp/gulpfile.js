@@ -93,8 +93,8 @@ gulp.task('html', function () {
 gulp.task('scripts', function() {
   return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
     .pipe($.sourcemaps.init())
-      .pipe($.jshint())
-      .pipe($.jshint.reporter('default'))
+      // .pipe($.jshint())
+      // .pipe($.jshint.reporter('default'))
       .pipe($.concat('app.js'))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./builds/development/scripts'))
@@ -105,9 +105,7 @@ gulp.task('scripts', function() {
 
 gulp.task('styles', function() {
   return gulp.src(['app/**/styles/*.css'])
-    .pipe($.sourcemaps.init())
-      .pipe($.concat('app.css'))
-    .pipe($.sourcemaps.write())
+    .pipe($.concat('app.css'))
     .pipe(gulp.dest('./builds/development/styles'))
     .pipe($.minifyCss({
       keepSpecialComments: 0
