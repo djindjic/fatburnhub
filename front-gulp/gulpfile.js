@@ -1,10 +1,11 @@
-var fs         = require('fs'),
-    gulp       = require('gulp'),
-    bowerFiles = require('main-bower-files'),
-    connect    = require('gulp-connect'),
-    url        = require('url'),
-    proxy      = require('proxy-middleware'),
-    $          = require('gulp-load-plugins')();
+var fs             = require('fs'),
+    gulp           = require('gulp'),
+    del            = require('del'),
+    mainBowerFiles = require('main-bower-files'),
+    connect        = require('gulp-connect'),
+    url            = require('url'),
+    proxy          = require('proxy-middleware'),
+    $              = require('gulp-load-plugins')();
 
 function getModules() {
   var rootDir = './app/modules';
@@ -23,6 +24,25 @@ function getModules() {
   }
   return dirs;
 };
+
+var bowerFiles = {
+  scripts: function() {
+    var fileRegEx = (/.*\.js$/i);
+    var files = mainBowerFiles({filter: fileRegEx});
+    return files;
+  },
+  styles: function() {
+    var fileRegEx = (/.*\.css$/i);
+    var files = mainBowerFiles({filter: fileRegEx});
+    return files;
+  },
+  fonts: function() {
+    var fileRegEx = (/.*\.(?:eot|woff|ttf|svg)$/i);
+    var files = mainBowerFiles({filter: fileRegEx});
+    return files;
+  }
+}
+
 
 gulp.task('connect', function(){
   connect.server({
@@ -81,12 +101,48 @@ gulp.task('scripts', function() {
     .pipe(connect.reload());
 });
 
-gulp.task('vendor', function() {
-  return gulp.src(['vendor/**/*.js'].concat(bowerFiles()))
+gulp.task('styles', function() {
+  return gulp.src(['app/**/styles/*.css'])
+    .pipe($.concat('app.css'))
+    .pipe(gulp.dest('./builds/development/styles'))
+    .pipe($.minifyCss({
+      keepSpecialComments: 0
+    }))
+    .pipe(gulp.dest('./builds/production/styles'))
+    .pipe(connect.reload());
+});
+
+gulp.task('fonts', function() {
+  return gulp.src(['app/**/fonts/*'])
+    .pipe(gulp.dest('./builds/development/fonts'))
+    .pipe(gulp.dest('./builds/production/fonts'))
+    .pipe(connect.reload());
+});
+
+gulp.task('vendor-scripts', function() {
+  return gulp.src(['vendor/**/*.js'].concat(bowerFiles.scripts()))
     .pipe($.concat('lib.js'))
     .pipe(gulp.dest('./builds/development/scripts'))
     .pipe($.uglify())
     .pipe(gulp.dest('./builds/production/scripts'))
+    .pipe(connect.reload());
+});
+
+gulp.task('vendor-styles', function() {
+  return gulp.src(['vendor/**/styles/*'].concat(bowerFiles.styles()))
+    .pipe($.concat('lib.css'))
+    .pipe(gulp.dest('./builds/development/styles'))
+    .pipe($.minifyCss({
+      keepSpecialComments: 0
+    }))
+    .pipe(gulp.dest('./builds/production/styles'))
+    .pipe(connect.reload());
+});
+
+gulp.task('vendor-fonts', function() {
+  return gulp.src(['vendor/**/fonts/*'].concat(bowerFiles.fonts()))
+    .pipe(gulp.dest('./builds/development/fonts'))
+    .pipe(gulp.dest('./builds/production/fonts'))
     .pipe(connect.reload());
 });
 
@@ -120,7 +176,15 @@ gulp.task('watch', function () {
   gulp.watch(['./app/*.html'], ['html']);
   gulp.watch(['./app/**/templates/*.html'], ['templates']);
   gulp.watch(['./app/**/*.js'], ['scripts']);
-  gulp.watch(['./bower.json'], ['vendor']);
+  gulp.watch(['./app/**/*.css'], ['styles']);
+  gulp.watch(['./app/**/fonts/*'], ['fonts']);
+  gulp.watch(['./bower.json'], ['vendor-scripts', 'vendor-styles', 'vendor-fonts']);
 });
 
-gulp.task('default', ['connect', 'connect-production', 'watch', 'vendor', 'scripts', 'html', 'templates']);
+gulp.task('clean', function () {
+  del([
+    'builds'
+  ]);
+});
+
+gulp.task('default', ['connect', 'connect-production', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'scripts', 'styles', 'fonts', 'html', 'templates']);
