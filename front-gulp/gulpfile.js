@@ -92,9 +92,9 @@ gulp.task('html', function () {
 
 gulp.task('scripts', function() {
   return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('default'))
     .pipe($.sourcemaps.init())
-      // .pipe($.jshint())
-      // .pipe($.jshint.reporter('default'))
       .pipe($.concat('app.js'))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./builds/development/scripts'))
@@ -189,4 +189,4 @@ gulp.task('clean', function () {
   ]);
 });
 
-gulp.task('default', ['connect', 'connect-production', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'scripts', 'styles', 'fonts', 'html', 'templates']);
+gulp.task('default', ['connect', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'scripts', 'styles', 'fonts', 'html', 'templates']);
