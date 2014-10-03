@@ -6,8 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="language" content="english">
     <title>Fat Burn Hub</title>
-    <link rel="stylesheet" href="/styles/lib.css">
-    <link rel="stylesheet" href="/styles/app.css">
+    <style>
+      body {
+        padding-top: 70px;
+        padding-bottom: 30px;
+      }
+    </style>
+    <script>
+      var cb = function() {
+        var lib = document.createElement('link');
+        lib.rel = 'stylesheet';
+        lib.href = '/styles/lib.css';
+
+        var app = document.createElement('link');
+        app.rel = 'stylesheet';
+        app.href = '/styles/app.css';
+        var h = document.getElementsByTagName('head')[0];
+        h.parentNode.insertBefore(lib, h);
+        h.parentNode.insertBefore(app, h);
+      };
+      var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+          webkitRequestAnimationFrame || msRequestAnimationFrame;
+      if (raf) raf(cb);
+      else window.addEventListener('load', cb);
+    </script>
   </head>
   <body>
     <!-- Fixed navbar -->
