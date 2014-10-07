@@ -40,6 +40,11 @@ var bowerFiles = {
     var fileRegEx = (/.*\.(?:eot|woff|ttf|svg)$/i);
     var files = mainBowerFiles({filter: fileRegEx});
     return files;
+  },
+  images: function() {
+    var fileRegEx = (/.*\.(?:jpg|png|gif)$/i);
+    var files = mainBowerFiles({filter: fileRegEx});
+    return files;
   }
 }
 
@@ -115,17 +120,36 @@ gulp.task('styles', function() {
 });
 
 gulp.task('images', function() {
-  return gulp.src(['app/shared/images/*'], {base: './app/shared/images'})
-    .pipe(gulp.dest('./builds/development/images'))
-    .pipe(gulp.dest('./builds/production/images'))
+  getModules().forEach(function(module) {
+      gulp.src(['app/modules/' + module + '/images/*'])
+        .pipe(gulp.dest('./builds/development/images/' + module))
+        .pipe(gulp.dest('./builds/production/images/' + module))
+        .pipe(connect.reload());
+  });
+});
+
+gulp.task('images-shared', function() {
+  return gulp.src(['app/shared/images/*'])
+    .pipe($.flatten())
+    .pipe(gulp.dest('./builds/development/images/shared'))
+    .pipe(gulp.dest('./builds/production/images/shared'))
     .pipe(connect.reload());
 });
 
-
 gulp.task('fonts', function() {
-  return gulp.src(['app/**/fonts/*'])
-    .pipe(gulp.dest('./builds/development/fonts'))
-    .pipe(gulp.dest('./builds/production/fonts'))
+  getModules().forEach(function(module) {
+      gulp.src(['app/modules/' + module + '/fonts/*'])
+        .pipe(gulp.dest('./builds/development/fonts/' + module))
+        .pipe(gulp.dest('./builds/production/fonts/' + module))
+        .pipe(connect.reload());
+  });
+});
+
+gulp.task('fonts-shared', function() {
+  return gulp.src(['app/shared/fonts/*'])
+    .pipe($.flatten())
+    .pipe(gulp.dest('./builds/development/fonts/shared'))
+    .pipe(gulp.dest('./builds/production/fonts/shared'))
     .pipe(connect.reload());
 });
 
@@ -151,14 +175,23 @@ gulp.task('vendor-styles', function() {
 
 gulp.task('vendor-fonts', function() {
   return gulp.src(['vendor/**/fonts/*'].concat(bowerFiles.fonts()))
+    .pipe($.flatten())
     .pipe(gulp.dest('./builds/development/fonts'))
     .pipe(gulp.dest('./builds/production/fonts'))
     .pipe(connect.reload());
 });
 
+gulp.task('vendor-images', function() {
+  return gulp.src(['vendor/**/images/*'].concat(bowerFiles.images()))
+    .pipe($.flatten())
+    .pipe(gulp.dest('./builds/development/images'))
+    .pipe(gulp.dest('./builds/production/images'))
+    .pipe(connect.reload());
+});
+
 gulp.task('templates', function () {
     getModules().forEach(function(module) {
-        gulp.src('app/**/templates/*.html')
+        gulp.src('app/modules/' + module + '/templates/*.html')
             .pipe($.htmlmin({
               collapseWhitespace: true,
               conservativeCollapse: true,
@@ -179,7 +212,7 @@ gulp.task('templates', function () {
             .pipe($.uglify())
             .pipe(gulp.dest('./builds/production/scripts'))
             .pipe(connect.reload());
-    })
+    });
 });
 
 gulp.task('watch', function () {
@@ -197,4 +230,4 @@ gulp.task('clean', function () {
   ]);
 });
 
-gulp.task('default', ['connect', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'scripts', 'styles', 'images', 'fonts', 'html', 'templates']);
+gulp.task('default', ['connect', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'vendor-images', 'scripts', 'styles', 'images', 'images-shared', 'fonts', 'fonts-shared', 'html', 'templates']);
