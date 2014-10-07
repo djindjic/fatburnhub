@@ -114,7 +114,10 @@ var vendor = function() {
 
 var clean = function (paths) {
   return new Promise(function (fulfil) {
-    $.util.log('Clear builds');
+    $.util.log('Clear:');
+    paths.forEach(function(path) {
+      $.util.log('-' + path);
+    });
     del(paths, fulfil);
   });
 };
@@ -249,7 +252,7 @@ var fonts = function() {
 
 var templates = function () {
   return new Promise(function (fulfil) {
-    $.util.log('Rebuilding app fonts');
+    $.util.log('Rebuilding app templates');
     eachModule(function(module) {
       $.util.log('-' + module);
       gulp.src('app/modules/' + module + '/templates/*.html')
@@ -271,44 +274,47 @@ var templates = function () {
           }))
         .pipe(gulp.dest('./builds/development/scripts'))
         .pipe($.uglify())
-        .pipe(gulp.dest('./builds/production/scripts'))
+        .pipe(gulp.dest('./builds/production/scripts'));
     }, fulfil);
   });
 };
 
-gulp.watch(['./app/index.html'], function() {
-  clean(['builds/**/index.html'])
-  .then(indexHtml);
-});
-gulp.watch(['./app/**/templates/*.html'], function() {
-  clean(['builds/**/scripts/templates.js'])
-  .then(templates);
-});
-gulp.watch(['./app/**/*.js'], function() {
-  clean(['builds/**/scripts/app.js'])
-  .then(scripts);
-});
-gulp.watch(['./app/**/*.css'], function() {
-  clean(['builds/**/styles/app.css'])
-  .then(styles);
-});
-gulp.watch(['./app/**/fonts/*'], function() {
-  clean(['builds/**/fonts/**/*'])
-  .then(fonts);
-});
-gulp.watch(['./bower.json'], function() {
-  clean([
-    'builds/**/scripts/lib.js',
-    'builds/**/styles/lib.css',
-    'builds/**/fonts/*',
-    'builds/**/images/*'
-  ])
-  .then(vendor);
-});
+var watchFiles = function() {
+  $.util.log('Watching files');
+  $.watch('app/index.html', function(files) {
+    clean(['builds/**/index.html'])
+    .then(indexHtml);
+  });
+  $.watch('app/**/templates/*.html', function(files) {
+    clean(['builds/**/scripts/templates.js'])
+    .then(templates);
+  });
+  $.watch('app/**/*.js', function(files) {
+    clean(['builds/**/scripts/app.js'])
+    .then(scripts);
+  });
+  $.watch('app/**/*.css', function(files) {
+    clean(['builds/**/styles/app.css'])
+    .then(styles);
+  });
+  $.watch('app/**/fonts/*', function(files) {
+    clean(['builds/**/fonts/**/*'])
+    .then(fonts);
+  });
+  $.watch('./bower.json', function(files) {
+    clean([
+      'builds/**/scripts/lib.js',
+      'builds/**/styles/lib.css',
+      'builds/**/fonts/*',
+      'builds/**/images/*'
+    ])
+    .then(vendor);
+  });
+};
 
 gulp.task('default',
   function() {
-    clean('builds')
+    clean(['builds'])
     .then(scripts)
     .then(templates)
     .then(styles)
@@ -316,6 +322,7 @@ gulp.task('default',
     .then(fonts)
     .then(indexHtml)
     .then(vendor)
-    .then(startServer);
+    .then(startServer)
+    .then(watchFiles);
   }
 );
