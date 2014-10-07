@@ -122,23 +122,6 @@ var clean = function (paths) {
   });
 };
 
-var startServer = function(){
-  return new Promise(function (fulfil) {
-    gulp.src('./builds/development')
-      .pipe($.webserver({
-        port: 9000,
-        livereload: true,
-        fallback: 'index.html',
-        proxies: [
-          {
-            source: '/api', target: 'http://localhost:3000/'
-          }
-        ]
-      }))
-      .on('end', fulfil);
-    });
-};
-
 var indexHtml = function () {
   return new Promise(function (fulfil) {
     $.util.log('Rebuilding index.html');
@@ -277,6 +260,23 @@ var templates = function () {
         .pipe(gulp.dest('./builds/production/scripts'));
     }, fulfil);
   });
+};
+
+var startServer = function(){
+  return new Promise(function (fulfil) {
+    gulp.src('./builds/development')
+      .pipe($.webserver({
+        port: 9000,
+        livereload: true,
+        fallback: 'index.html',
+        proxies: [
+          {
+            source: '/api', target: 'http://localhost:3000/'
+          }
+        ]
+      }))
+      .on('end', fulfil);
+    });
 };
 
 var watchFiles = function() {
