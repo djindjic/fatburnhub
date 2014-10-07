@@ -112,12 +112,10 @@ var vendor = function() {
   });
 };
 
-var clean = function () {
+var clean = function (paths) {
   return new Promise(function (fulfil) {
     $.util.log('Clear builds');
-    del([
-      'builds'
-    ], fulfil);
+    del(paths, fulfil);
   });
 };
 
@@ -278,16 +276,39 @@ var templates = function () {
   });
 };
 
-gulp.watch(['./app/index.html'], indexHtml);
-gulp.watch(['./app/**/templates/*.html'], templates);
-gulp.watch(['./app/**/*.js'], scripts);
-gulp.watch(['./app/**/*.css'], styles);
-gulp.watch(['./app/**/fonts/*'], fonts);
-gulp.watch(['./bower.json'], vendor);
+gulp.watch(['./app/index.html'], function() {
+  clean(['builds/**/index.html'])
+  .then(indexHtml);
+});
+gulp.watch(['./app/**/templates/*.html'], function() {
+  clean(['builds/**/scripts/templates.js'])
+  .then(templates);
+});
+gulp.watch(['./app/**/*.js'], function() {
+  clean(['builds/**/scripts/app.js'])
+  .then(scripts);
+});
+gulp.watch(['./app/**/*.css'], function() {
+  clean(['builds/**/styles/app.css'])
+  .then(styles);
+});
+gulp.watch(['./app/**/fonts/*'], function() {
+  clean(['builds/**/fonts/**/*'])
+  .then(fonts);
+});
+gulp.watch(['./bower.json'], function() {
+  clean([
+    'builds/**/scripts/lib.js',
+    'builds/**/styles/lib.css',
+    'builds/**/fonts/*',
+    'builds/**/images/*'
+  ])
+  .then(vendor);
+});
 
 gulp.task('default',
   function() {
-    clean()
+    clean('builds')
     .then(scripts)
     .then(templates)
     .then(styles)
