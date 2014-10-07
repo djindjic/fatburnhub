@@ -1,4 +1,5 @@
 var fs             = require('fs'),
+    promise        = require('promise'),
     gulp           = require('gulp'),
     del            = require('del'),
     mainBowerFiles = require('main-bower-files'),
@@ -49,9 +50,9 @@ var bowerFiles = {
 }
 
 
-gulp.task('connect', function(){
+var startServer = function(env){
   connect.server({
-    root: ['./builds/development'],
+    root: ['./builds/' + env],
     port: 9000,
     livereload: true,
     middleware: function(connect, o) {
@@ -62,22 +63,7 @@ gulp.task('connect', function(){
       })() ];
     }
   });
-});
-
-gulp.task('connect-production', function(){
-  connect.server({
-    root: ['./builds/production'],
-    port: 9001,
-    livereload: true,
-    middleware: function(connect, o) {
-      return [ (function() {
-          var options = url.parse('http://localhost:3000');
-          options.route = '/api/';
-          return proxy(options);
-      })() ];
-    }
-  });
-});
+};
 
 gulp.task('html', function () {
   return gulp.src('./app/*.html')
@@ -215,14 +201,12 @@ gulp.task('templates', function () {
     });
 });
 
-gulp.task('watch', function () {
-  gulp.watch(['./app/*.html'], ['html']);
-  gulp.watch(['./app/**/templates/*.html'], ['templates']);
-  gulp.watch(['./app/**/*.js'], ['scripts']);
-  gulp.watch(['./app/**/*.css'], ['styles']);
-  gulp.watch(['./app/**/fonts/*'], ['fonts']);
-  gulp.watch(['./bower.json'], ['vendor-scripts', 'vendor-styles', 'vendor-fonts']);
-});
+gulp.watch(['./app/*.html'], ['html']);
+gulp.watch(['./app/**/templates/*.html'], ['templates']);
+gulp.watch(['./app/**/*.js'], ['scripts']);
+gulp.watch(['./app/**/*.css'], ['styles']);
+gulp.watch(['./app/**/fonts/*'], ['fonts']);
+gulp.watch(['./bower.json'], ['vendor-scripts', 'vendor-styles', 'vendor-fonts', 'vendor-images']);
 
 gulp.task('clean', function () {
   del([
@@ -230,4 +214,8 @@ gulp.task('clean', function () {
   ]);
 });
 
-gulp.task('default', ['connect', 'watch', 'vendor-scripts', 'vendor-fonts', 'vendor-styles', 'vendor-images', 'scripts', 'styles', 'images', 'images-shared', 'fonts', 'fonts-shared', 'html', 'templates']);
+gulp.task('default', ['vendor-scripts', 'vendor-fonts', 'vendor-styles', 'vendor-images', 'scripts', 'styles', 'images', 'images-shared', 'fonts', 'fonts-shared', 'html', 'templates'],
+  function() {
+    startServer('development');
+  }
+);
