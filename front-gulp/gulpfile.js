@@ -82,7 +82,7 @@ var vendorStyles = function() {
 var vendorFonts = function() {
   return new Promise(function (fulfil) {
     $.util.log('-fonts');
-    gulp.src(['vendor/**/fonts/*'].concat(bowerFiles.fonts()))
+    gulp.src(['vendor/**/fonts/**/*'].concat(bowerFiles.fonts()))
       .pipe($.flatten())
       .pipe(gulp.dest('./builds/development/fonts'))
       .pipe(gulp.dest('./builds/production/fonts'))
@@ -93,7 +93,7 @@ var vendorFonts = function() {
 var vendorImages = function() {
   return new Promise(function (fulfil) {
     $.util.log('-images');
-    gulp.src(['vendor/**/images/*'].concat(bowerFiles.images()))
+    gulp.src(['vendor/**/images/**/*'].concat(bowerFiles.images()))
       .pipe($.flatten())
       .pipe(gulp.dest('./builds/development/images'))
       .pipe(gulp.dest('./builds/production/images'))
@@ -301,7 +301,7 @@ var watchFiles = function() {
     clean(['builds/**/fonts/**/*'])
     .then(fonts);
   });
-  $.watch('./bower.json', function(files) {
+  $.watch(['./bower.json', 'vendor/**'], function(files) {
     clean([
       'builds/**/scripts/lib.js',
       'builds/**/styles/lib.css',
