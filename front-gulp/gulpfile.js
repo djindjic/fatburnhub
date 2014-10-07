@@ -301,7 +301,7 @@ var watchFiles = function() {
     clean(['builds/**/fonts/**/*'])
     .then(fonts);
   });
-  $.watch(['./bower.json', 'vendor/**'], function(files) {
+  $.watch(['./bower.json', 'vendor/**/*'], function(files) {
     clean([
       'builds/**/scripts/lib.js',
       'builds/**/styles/lib.css',
