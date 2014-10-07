@@ -1,14 +1,12 @@
 var fs             = require('fs'),
-    promise        = require('promise'),
+    Promise        = require('promise'),
     gulp           = require('gulp'),
     del            = require('del'),
     mainBowerFiles = require('main-bower-files'),
-    connect        = require('gulp-connect'),
     url            = require('url'),
-    proxy          = require('proxy-middleware'),
     $              = require('gulp-load-plugins')();
 
-function getModules() {
+var eachModule = function(closure, cb) {
   var rootDir = './app/modules';
   var dirs, file, filePath, files, stat, _i, _len;
   files = fs.readdirSync(rootDir);
@@ -23,7 +21,13 @@ function getModules() {
       }
     }
   }
-  return dirs;
+  for(var moduleIndex = 0; moduleIndex <= dirs.length; moduleIndex++) {
+    if(moduleIndex === dirs.length) {
+      cb();
+    } else {
+      closure(dirs[moduleIndex]);
+    }
+  };
 };
 
 var bowerFiles = {
@@ -49,173 +53,248 @@ var bowerFiles = {
   }
 }
 
-
-var startServer = function(env){
-  connect.server({
-    root: ['./builds/' + env],
-    port: 9000,
-    livereload: true,
-    middleware: function(connect, o) {
-      return [ (function() {
-          var options = url.parse('http://localhost:3000');
-          options.route = '/api/';
-          return proxy(options);
-      })() ];
-    }
+var vendorScripts = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-scripts');
+    gulp.src(['vendor/**/*.js'].concat(bowerFiles.scripts()))
+      .pipe($.concat('lib.js'))
+      .pipe(gulp.dest('./builds/development/scripts'))
+      .pipe($.uglify())
+      .pipe(gulp.dest('./builds/production/scripts'))
+      .on('end', fulfil);
   });
 };
 
-gulp.task('html', function () {
-  return gulp.src('./app/*.html')
-    .pipe(gulp.dest('./builds/development'))
-    .pipe($.htmlmin({
-      collapseWhitespace: true,
-      conservativeCollapse: true,
-      minifyJS: true,
-      minifyCSS: true,
-      useShortDoctype: true,
-      removeEmptyAttributes: true,
-      removeComments: true
-    }))
-    .pipe(gulp.dest('./builds/production'))
-    .pipe(connect.reload());
-});
+var vendorStyles = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-styles');
+    gulp.src(['vendor/**/styles/*'].concat(bowerFiles.styles()))
+      .pipe($.concat('lib.css'))
+      .pipe($.minifyCss({
+        keepSpecialComments: 0
+      }))
+      .pipe(gulp.dest('./builds/development/styles'))
+      .pipe(gulp.dest('./builds/production/styles'))
+      .on('end', fulfil);
+  });
+};
 
-gulp.task('scripts', function() {
-  return gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('default'))
-    .pipe($.sourcemaps.init())
-      .pipe($.concat('app.js'))
-    .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('./builds/development/scripts'))
-    .pipe($.uglify())
-    .pipe(gulp.dest('./builds/production/scripts'))
-    .pipe(connect.reload());
-});
+var vendorFonts = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-fonts');
+    gulp.src(['vendor/**/fonts/*'].concat(bowerFiles.fonts()))
+      .pipe($.flatten())
+      .pipe(gulp.dest('./builds/development/fonts'))
+      .pipe(gulp.dest('./builds/production/fonts'))
+      .on('end', fulfil);
+  });
+};
 
-gulp.task('styles', function() {
-  return gulp.src(['app/**/styles/*.css'])
-    .pipe($.concat('app.css'))
-    .pipe(gulp.dest('./builds/development/styles'))
-    .pipe($.minifyCss({
-      keepSpecialComments: 0
-    }))
-    .pipe(gulp.dest('./builds/production/styles'))
-    .pipe(connect.reload());
-});
+var vendorImages = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-images');
+    gulp.src(['vendor/**/images/*'].concat(bowerFiles.images()))
+      .pipe($.flatten())
+      .pipe(gulp.dest('./builds/development/images'))
+      .pipe(gulp.dest('./builds/production/images'))
+      .on('end', fulfil);
+  });
+};
 
-gulp.task('images', function() {
-  getModules().forEach(function(module) {
+var vendor = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding vendor and bower assets');
+    vendorScripts()
+    .then(vendorStyles)
+    .then(vendorImages)
+    .then(vendorFonts)
+    .then(fulfil);
+  });
+};
+
+var clean = function () {
+  return new Promise(function (fulfil) {
+    $.util.log('Clear builds');
+    del([
+      'builds'
+    ], fulfil);
+  });
+};
+
+var startServer = function(){
+  return new Promise(function (fulfil) {
+    gulp.src('./builds/development')
+      .pipe($.webserver({
+        port: 9000,
+        livereload: true,
+        fallback: 'index.html',
+        proxies: [
+          {
+            source: '/api', target: 'http://localhost:3000/'
+          }
+        ]
+      }))
+      .on('end', fulfil);
+    });
+};
+
+var indexHtml = function () {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding index.html');
+    gulp.src('./app/index.html')
+      .pipe(gulp.dest('./builds/development'))
+      .pipe($.htmlmin({
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        minifyJS: true,
+        minifyCSS: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeComments: true
+      }))
+      .pipe(gulp.dest('./builds/production'))
+      .on('end', fulfil);
+    });
+};
+
+var scripts = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app scripts');
+    gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
+      .pipe($.jshint())
+      .pipe($.jshint.reporter('default'))
+      .pipe($.sourcemaps.init())
+        .pipe($.concat('app.js'))
+      .pipe($.sourcemaps.write())
+      .pipe(gulp.dest('./builds/development/scripts'))
+      .pipe($.uglify())
+      .pipe(gulp.dest('./builds/production/scripts'))
+      .on('end', fulfil);
+    });
+};
+
+var styles = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app styles');
+    gulp.src(['app/**/styles/*.css'])
+      .pipe($.concat('app.css'))
+      .pipe(gulp.dest('./builds/development/styles'))
+      .pipe($.minifyCss({
+        keepSpecialComments: 0
+      }))
+      .pipe(gulp.dest('./builds/production/styles'))
+      .on('end', fulfil);
+    });
+};
+
+var imagesModules = function() {
+  return new Promise(function (fulfil) {
+    eachModule(function(module) {
+      $.util.log('-' + module);
       gulp.src(['app/modules/' + module + '/images/*'])
         .pipe(gulp.dest('./builds/development/images/' + module))
         .pipe(gulp.dest('./builds/production/images/' + module))
-        .pipe(connect.reload());
+    }, fulfil);
   });
-});
+};
 
-gulp.task('images-shared', function() {
-  return gulp.src(['app/shared/images/*'])
-    .pipe($.flatten())
-    .pipe(gulp.dest('./builds/development/images/shared'))
-    .pipe(gulp.dest('./builds/production/images/shared'))
-    .pipe(connect.reload());
-});
+var imagesShared = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-shared');
+    gulp.src(['app/shared/images/*'])
+      .pipe($.flatten())
+      .pipe(gulp.dest('./builds/development/images/shared'))
+      .pipe(gulp.dest('./builds/production/images/shared'))
+      .on('end', fulfil);
+  });
+};
 
-gulp.task('fonts', function() {
-  getModules().forEach(function(module) {
+var images = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app images');
+    imagesModules()
+    .then(imagesShared)
+    .then(fulfil);
+  });
+}
+
+var fontsModules = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app fonts');
+    eachModule(function(module) {
+      $.util.log('-' + module);
       gulp.src(['app/modules/' + module + '/fonts/*'])
         .pipe(gulp.dest('./builds/development/fonts/' + module))
         .pipe(gulp.dest('./builds/production/fonts/' + module))
-        .pipe(connect.reload());
+    }, fulfil);
   });
-});
+};
 
-gulp.task('fonts-shared', function() {
-  return gulp.src(['app/shared/fonts/*'])
-    .pipe($.flatten())
-    .pipe(gulp.dest('./builds/development/fonts/shared'))
-    .pipe(gulp.dest('./builds/production/fonts/shared'))
-    .pipe(connect.reload());
-});
+var fontsShared = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('-shared');
+    gulp.src(['app/shared/fonts/*'])
+      .pipe($.flatten())
+      .pipe(gulp.dest('./builds/development/fonts/shared'))
+      .pipe(gulp.dest('./builds/production/fonts/shared'))
+      .on('end', fulfil);
+  });
+};
 
-gulp.task('vendor-scripts', function() {
-  return gulp.src(['vendor/**/*.js'].concat(bowerFiles.scripts()))
-    .pipe($.concat('lib.js'))
-    .pipe(gulp.dest('./builds/development/scripts'))
-    .pipe($.uglify())
-    .pipe(gulp.dest('./builds/production/scripts'))
-    .pipe(connect.reload());
-});
+var fonts = function() {
+  return new Promise(function (fulfil) {
+    fontsModules()
+    .then(fontsShared)
+    .then(fulfil);
+  });
+}
 
-gulp.task('vendor-styles', function() {
-  return gulp.src(['vendor/**/styles/*'].concat(bowerFiles.styles()))
-    .pipe($.concat('lib.css'))
-    .pipe($.minifyCss({
-      keepSpecialComments: 0
-    }))
-    .pipe(gulp.dest('./builds/development/styles'))
-    .pipe(gulp.dest('./builds/production/styles'))
-    .pipe(connect.reload());
-});
+var templates = function () {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app fonts');
+    eachModule(function(module) {
+      $.util.log('-' + module);
+      gulp.src('app/modules/' + module + '/templates/*.html')
+        .pipe($.htmlmin({
+          collapseWhitespace: true,
+          conservativeCollapse: true,
+          minifyJS: true,
+          minifyCSS: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeComments: true
+        }))
+        .pipe($.angularTemplatecache({
+            module: module,
+            base: function(file) {
+                var splitPath = file.relative.split('/');
+                return splitPath[splitPath.length - 1];
+            }
+          }))
+        .pipe(gulp.dest('./builds/development/scripts'))
+        .pipe($.uglify())
+        .pipe(gulp.dest('./builds/production/scripts'))
+    }, fulfil);
+  });
+};
 
-gulp.task('vendor-fonts', function() {
-  return gulp.src(['vendor/**/fonts/*'].concat(bowerFiles.fonts()))
-    .pipe($.flatten())
-    .pipe(gulp.dest('./builds/development/fonts'))
-    .pipe(gulp.dest('./builds/production/fonts'))
-    .pipe(connect.reload());
-});
+gulp.watch(['./app/index.html'], indexHtml);
+gulp.watch(['./app/**/templates/*.html'], templates);
+gulp.watch(['./app/**/*.js'], scripts);
+gulp.watch(['./app/**/*.css'], styles);
+gulp.watch(['./app/**/fonts/*'], fonts);
+gulp.watch(['./bower.json'], vendor);
 
-gulp.task('vendor-images', function() {
-  return gulp.src(['vendor/**/images/*'].concat(bowerFiles.images()))
-    .pipe($.flatten())
-    .pipe(gulp.dest('./builds/development/images'))
-    .pipe(gulp.dest('./builds/production/images'))
-    .pipe(connect.reload());
-});
-
-gulp.task('templates', function () {
-    getModules().forEach(function(module) {
-        gulp.src('app/modules/' + module + '/templates/*.html')
-            .pipe($.htmlmin({
-              collapseWhitespace: true,
-              conservativeCollapse: true,
-              minifyJS: true,
-              minifyCSS: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeComments: true
-            }))
-            .pipe($.angularTemplatecache({
-                module: module,
-                base: function(file) {
-                    var splitPath = file.relative.split('/');
-                    return splitPath[splitPath.length - 1];
-                }
-              }))
-            .pipe(gulp.dest('./builds/development/scripts'))
-            .pipe($.uglify())
-            .pipe(gulp.dest('./builds/production/scripts'))
-            .pipe(connect.reload());
-    });
-});
-
-gulp.watch(['./app/*.html'], ['html']);
-gulp.watch(['./app/**/templates/*.html'], ['templates']);
-gulp.watch(['./app/**/*.js'], ['scripts']);
-gulp.watch(['./app/**/*.css'], ['styles']);
-gulp.watch(['./app/**/fonts/*'], ['fonts']);
-gulp.watch(['./bower.json'], ['vendor-scripts', 'vendor-styles', 'vendor-fonts', 'vendor-images']);
-
-gulp.task('clean', function () {
-  del([
-    'builds'
-  ]);
-});
-
-gulp.task('default', ['vendor-scripts', 'vendor-fonts', 'vendor-styles', 'vendor-images', 'scripts', 'styles', 'images', 'images-shared', 'fonts', 'fonts-shared', 'html', 'templates'],
+gulp.task('default',
   function() {
-    startServer('development');
+    clean()
+    .then(scripts)
+    .then(templates)
+    .then(styles)
+    .then(images)
+    .then(fonts)
+    .then(indexHtml)
+    .then(vendor)
+    .then(startServer);
   }
 );
