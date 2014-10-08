@@ -6,6 +6,6 @@
 	  .controller('AboutCtrl', [AboutCtrl]);
 
 	function AboutCtrl() {
-	  	this.a = 'about new fatburnhub.com';
+	  	this.a = 'about';
 	  }
 })();
