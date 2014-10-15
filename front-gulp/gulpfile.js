@@ -4,7 +4,9 @@ var fs             = require('fs'),
     del            = require('del'),
     mainBowerFiles = require('main-bower-files'),
     url            = require('url'),
-    $              = require('gulp-load-plugins')();
+    stylish        = require('jshint-stylish'),
+    $              = require('gulp-load-plugins')(),
+    cachebust      = new $.cachebust;
 
 var eachModule = function(closure, cb) {
   var rootDir = './app/modules';
@@ -58,6 +60,7 @@ var vendorScripts = function() {
     $.util.log('-scripts');
     gulp.src(['app/vendor/**/*.js'].concat(bowerFiles.scripts()))
       .pipe($.concat('lib.js'))
+      .pipe(cachebust.resources())
       .pipe(gulp.dest('./builds/development/scripts'))
       .pipe($.uglify())
       .pipe(gulp.dest('./builds/production/scripts'))
@@ -70,12 +73,10 @@ var vendorStyles = function() {
     $.util.log('-styles');
     gulp.src(['app/vendor/**/styles/*'].concat(bowerFiles.styles()))
       .pipe($.concat('lib.css'))
-      .pipe($.uncss({
-        html: ['builds/development/index.html']
-      }))
       .pipe($.minifyCss({
         keepSpecialComments: 0
       }))
+      .pipe(cachebust.resources())
       .pipe(gulp.dest('./builds/development/styles'))
       .pipe(gulp.dest('./builds/production/styles'))
       .on('end', fulfil);
@@ -129,6 +130,7 @@ var indexHtml = function () {
   return new Promise(function (fulfil) {
     $.util.log('Rebuilding index.html');
     gulp.src('./app/index.html')
+      .pipe(cachebust.references())
       .pipe(gulp.dest('./builds/development'))
       .pipe($.htmlmin({
         collapseWhitespace: true,
@@ -147,12 +149,13 @@ var indexHtml = function () {
 var scripts = function() {
   return new Promise(function (fulfil) {
     $.util.log('Rebuilding app scripts');
-    gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js'])
+    gulp.src(['app/config.js', 'app/app.js', 'app/**/*module.js', 'app/**/config/*.js', 'app/**/*.js', '!app/vendor/**/*'])
       .pipe($.jshint())
-      .pipe($.jshint.reporter('default'))
+      .pipe($.jshint.reporter(stylish))
       .pipe($.sourcemaps.init())
         .pipe($.concat('app.js'))
       .pipe($.sourcemaps.write())
+      .pipe(cachebust.resources())
       .pipe(gulp.dest('./builds/development/scripts'))
       .pipe($.uglify())
       .pipe(gulp.dest('./builds/production/scripts'))
@@ -163,8 +166,9 @@ var scripts = function() {
 var styles = function() {
   return new Promise(function (fulfil) {
     $.util.log('Rebuilding app styles');
-    gulp.src(['app/**/styles/*.css'])
+    gulp.src(['app/**/styles/*.css', '!app/vendor/**/*'])
       .pipe($.concat('app.css'))
+      .pipe(cachebust.resources())
       .pipe(gulp.dest('./builds/development/styles'))
       .pipe($.minifyCss({
         keepSpecialComments: 0
@@ -258,6 +262,7 @@ var templates = function () {
                 return splitPath[splitPath.length - 1];
             }
           }))
+        .pipe(cachebust.resources())
         .pipe(gulp.dest('./builds/development/scripts'))
         .pipe($.uglify())
         .pipe(gulp.dest('./builds/production/scripts'));
@@ -272,7 +277,7 @@ var startServer = function(){
         port: 9000,
         livereload: true,
         fallback: 'index.html',
-        proxies: [
+         proxies: [
           {
             source: '/api', target: 'http://localhost:3000/'
           }
@@ -284,30 +289,30 @@ var startServer = function(){
 
 var watchFiles = function() {
   $.util.log('Watching files');
-  $.watch('app/index.html', function(files) {
+  $.watch(['app/index.html'], function(files) {
     clean(['builds/**/index.html'])
     .then(indexHtml);
   });
-  $.watch('app/**/templates/*.html', function(files) {
-    clean(['builds/**/scripts/templates.js'])
+  $.watch('app/modules/**/templates/*.html', function(files) {
+    clean(['builds/**/scripts/templates*.js'])
     .then(templates);
   });
-  $.watch('app/**/*.js', function(files) {
-    clean(['builds/**/scripts/app.js'])
+  $.watch(['app/**/*.js', '!app/vendor/**/*.js'], function(files) {
+    clean(['builds/**/scripts/app*.js'])
     .then(scripts);
   });
-  $.watch('app/**/*.css', function(files) {
-    clean(['builds/**/styles/app.css'])
+  $.watch(['app/**/*.css', '!app/vendor/**/*.css'], function(files) {
+    clean(['builds/**/styles/app*.css'])
     .then(styles);
   });
-  $.watch('app/**/fonts/*', function(files) {
+  $.watch(['app/**/fonts/*', '!app/vendor/**/*'], function(files) {
     clean(['builds/**/fonts/**/*'])
     .then(fonts);
   });
   $.watch(['./bower.json', 'app/vendor/**/*'], function(files) {
     clean([
-      'builds/**/scripts/lib.js',
-      'builds/**/styles/lib.css',
+      'builds/**/scripts/lib*.js',
+      'builds/**/styles/lib*.css',
       'builds/**/fonts/*',
       'builds/**/images/*'
     ])
@@ -318,13 +323,13 @@ var watchFiles = function() {
 gulp.task('default',
   function() {
     clean(['builds'])
-    .then(indexHtml)
     .then(scripts)
     .then(templates)
     .then(styles)
     .then(images)
     .then(fonts)
     .then(vendor)
+    .then(indexHtml)
     .then(startServer)
     .then(watchFiles);
   }
