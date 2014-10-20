@@ -3,7 +3,6 @@ var fs             = require('fs'),
     gulp           = require('gulp'),
     del            = require('del'),
     mainBowerFiles = require('main-bower-files'),
-    url            = require('url'),
     stylish        = require('jshint-stylish'),
     glob           = require('glob'),
     $              = require('gulp-load-plugins')(),
@@ -30,7 +29,7 @@ var eachModule = function(closure, cb) {
     } else {
       closure(dirs[moduleIndex]);
     }
-  };
+  }
 };
 
 var bowerFiles = {
@@ -54,7 +53,7 @@ var bowerFiles = {
     var files = mainBowerFiles({filter: fileRegEx});
     return files;
   }
-}
+};
 
 var vendorScripts = function() {
   return new Promise(function (fulfil) {
@@ -158,7 +157,7 @@ var imagesModules = function() {
       $.util.log('-' + module);
       gulp.src(['app/modules/' + module + '/images/*'])
         .pipe(gulp.dest('./builds/development/images/' + module))
-        .pipe(gulp.dest('./builds/production/images/' + module))
+        .pipe(gulp.dest('./builds/production/images/' + module));
     }, fulfil);
   });
 };
@@ -181,7 +180,7 @@ var images = function() {
     .then(imagesShared)
     .then(fulfil);
   });
-}
+};
 
 var fontsModules = function() {
   return new Promise(function (fulfil) {
@@ -190,7 +189,7 @@ var fontsModules = function() {
       $.util.log('-' + module);
       gulp.src(['app/modules/' + module + '/fonts/*'])
         .pipe(gulp.dest('./builds/development/fonts/' + module))
-        .pipe(gulp.dest('./builds/production/fonts/' + module))
+        .pipe(gulp.dest('./builds/production/fonts/' + module));
     }, fulfil);
   });
 };
@@ -212,7 +211,7 @@ var fonts = function() {
     .then(fontsShared)
     .then(fulfil);
   });
-}
+};
 
 var templates = function () {
   return new Promise(function (fulfil) {
@@ -274,6 +273,16 @@ var indexHtml = function () {
     });
 };
 
+var createCordovaBuildFiles = function () {
+  return new Promise(function (fulfil) {
+    $.util.log('Creating cordova build files');
+    gulp.src('./builds/production/**/*')
+      .pipe(cachebust.references())
+      .pipe(gulp.dest('./www'))
+      .on('end', fulfil);
+    });
+};
+
 var startServer = function(){
   return new Promise(function (fulfil) {
     gulp.src('./builds/development')
@@ -293,40 +302,50 @@ var startServer = function(){
 
 var watchFiles = function() {
   $.util.log('Watching files');
-  $.watch(['app/index.html'], function(files) {
+  $.watch(['app/index.html'], function() {
     clean(['builds/**/index.html'])
-    .then(indexHtml);
+    .then(indexHtml)
+    .then(createCordovaBuildFiles);
   });
-  $.watch('app/modules/**/templates/*.html', function(files) {
+  $.watch('app/modules/**/templates/*.html', function() {
     clean(['builds/**/scripts/templates*.js'])
-    .then(templates);
+    .then(templates)
+    .then(indexHtml)
+    .then(createCordovaBuildFiles);
   });
-  $.watch(['app/**/*.js', '!app/vendor/**/*.js'], function(files) {
+  $.watch(['app/**/*.js', '!app/vendor/**/*.js'], function() {
     clean(['builds/**/scripts/app*.js'])
-    .then(scripts);
+    .then(scripts)
+    .then(indexHtml)
+    .then(createCordovaBuildFiles);
   });
-  $.watch(['app/**/*.css', '!app/vendor/**/*.css'], function(files) {
+  $.watch(['app/**/*.css', '!app/vendor/**/*.css'], function() {
     clean(['builds/**/styles/app*.css'])
-    .then(styles);
+    .then(styles)
+    .then(indexHtml)
+    .then(createCordovaBuildFiles);
   });
-  $.watch(['app/**/fonts/*', '!app/vendor/**/*'], function(files) {
+  $.watch(['app/**/fonts/*', '!app/vendor/**/*'], function() {
     clean(['builds/**/fonts/**/*'])
-    .then(fonts);
+    .then(fonts)
+    .then(createCordovaBuildFiles);
   });
-  $.watch(['./bower.json', 'app/vendor/**/*'], function(files) {
+  $.watch(['./bower.json', 'app/vendor/**/*'], function() {
     clean([
       'builds/**/scripts/lib*.js',
       'builds/**/styles/lib*.css',
       'builds/**/fonts/*',
       'builds/**/images/*'
     ])
-    .then(vendor);
+    .then(vendor)
+    .then(indexHtml)
+    .then(createCordovaBuildFiles);
   });
 };
 
 gulp.task('default',
   function() {
-    clean(['builds'])
+    clean(['builds', 'www'])
     .then(scripts)
     .then(templates)
     .then(styles)
@@ -334,6 +353,7 @@ gulp.task('default',
     .then(fonts)
     .then(vendor)
     .then(indexHtml)
+    .then(createCordovaBuildFiles)
     .then(startServer)
     .then(watchFiles);
   }
