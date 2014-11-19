@@ -1,6 +1,2 @@
 node_modules
-.tmp
-bower_components
-platforms
-plugins
-www
+app/jspm_packages
