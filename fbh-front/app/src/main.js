@@ -3,7 +3,7 @@ import angular from "angular";
 
 angular.module('ionicApp', ['ionic'])
       .controller('MyController', ['$scope', function ($scope) {
-        $scope.greetMe = 'fatburnhub.com';
+        $scope.greetMe = 'world';
       }]);
 
 angular.element(document).ready(function() {
