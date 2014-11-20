@@ -1,9 +1,89 @@
 <!doctype html>
 <html>
   <body>
+  <style type="text/css">
+    .bar {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+    height: 44px;
+    border-width: 0;
+    border-style: solid;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #ddd;
+    background-color: white;
+    /* border-width: 1px will actually create 2 device pixels on retina */
+    /* this nifty trick sets an actual 1px border on hi-res displays */
+    background-size: 0; }
+    @media (min--moz-device-pixel-ratio: 1.5), (-webkit-min-device-pixel-ratio: 1.5), (min-device-pixel-ratio: 1.5), (min-resolution: 144dpi), (min-resolution: 1.5dppx) {
+      .bar {
+        border: none;
+        background-image: linear-gradient(0deg, #ddd, #ddd 50%, transparent 50%);
+        background-position: bottom;
+        background-size: 100% 1px;
+        background-repeat: no-repeat; } }
+    .bar.bar-positive {
+      border-color: #145fd7;
+      background-color: #4a87ee;
+      background-image: linear-gradient(0deg, #145fd7, #145fd7 50%, transparent 50%);
+      color: #fff; }
+    .bar.bar-positive .title {
+      color: #fff; }
+
+  .bar-header {
+    top: 0;
+    border-top-width: 0;
+    border-bottom-width: 1px; }
+    .bar-header.has-tabs-top {
+      border-bottom-width: 0px; }
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #000;
+  font-weight: 500;
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  line-height: 1.2; }
+  h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small {
+    font-weight: normal;
+    line-height: 1; }
+
+h1, .h1, h2, .h2, h3, .h3 {
+  margin-top: 20px;
+  margin-bottom: 10px; }
+  h1:first-child, .h1:first-child, h2:first-child, .h2:first-child, h3:first-child, .h3:first-child {
+    margin-top: 0; }
+  h1 + h1, h1 + .h1, h1 + h2, h1 + .h2, h1 + h3, h1 + .h3, .h1 + h1, .h1 + .h1, .h1 + h2, .h1 + .h2, .h1 + h3, .h1 + .h3, h2 + h1, h2 + .h1, h2 + h2, h2 + .h2, h2 + h3, h2 + .h3, .h2 + h1, .h2 + .h1, .h2 + h2, .h2 + .h2, .h2 + h3, .h2 + .h3, h3 + h1, h3 + .h1, h3 + h2, h3 + .h2, h3 + h3, h3 + .h3, .h3 + h1, .h3 + .h1, .h3 + h2, .h3 + .h2, .h3 + h3, .h3 + .h3 {
+    margin-top: 10px; }
+
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+
+h1, .h1 {
+  font-size: 36px; }
+  </style>
     <div ng-controller="MyController" class="bar bar-header bar-positive">
       <h1 class="title">Hello {{greetMe}}</h1>
     </div>
+    
+    
+
+
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>
