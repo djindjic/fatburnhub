@@ -1,12 +1,24 @@
 <!doctype html>
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="bundle_assets/styles/ionic.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
-  <body>
-    <div ng-controller="MyController" class="bar bar-header bar-positive">
-      <h1 class="title">Hello {{greetMe}}</h1>
+  <body ng-controller="MyController">
+    <div class="bar bar-header bar-positive">
+      <h1 class="title">Hello {{data.greetMe}}</h1>
     </div>
-    <script src="bundle.js"></script>
+    <div class="list">
+	  <label class="item item-input">
+	    <input type="text" placeholder="First Name">
+	  </label>
+	  <label class="item item-input">
+	    <input type="text" placeholder="Last Name" ng-model="data.greetMe">
+	  </label>
+	  <label class="item item-input">
+	    <textarea placeholder="Comments"></textarea>
+	  </label>
+	</div>
+	<script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

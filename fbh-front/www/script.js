@@ -17458,7 +17458,7 @@ System.register("github:driftyco/ionic-bower@1.0.0-beta.13/js/ionic-angular", ["
   }).call(System.global);  return System.get("@@global-helpers").retrieveGlobal(__module.id, false);
 });
 
-System.register("src/main", ["github:driftyco/ionic-bower@1.0.0-beta.13", "github:angular/bower-angular@1.3.3"], function($__export) {
+System.register("src/main", ["github:driftyco/ionic-bower@1.0.0-beta.13", "github:firebase/angularFire@0.9.0", "github:angular/bower-angular@1.3.3"], function($__export) {
   "use strict";
   var __moduleName = "src/main";
   function require(path) {
@@ -17466,12 +17466,15 @@ System.register("src/main", ["github:driftyco/ionic-bower@1.0.0-beta.13", "githu
   }
   var angular;
   return {
-    setters: [function(m) {}, function(m) {
+    setters: [function(m) {}, function(m) {}, function(m) {
       angular = m.default;
     }],
     execute: function() {
-      angular.module('ionicApp', ['ionic']).controller('MyController', ['$scope', function($scope) {
-        $scope.greetMe = 'world';
+      angular.module('ionicApp', ['ionic', 'firebase']).controller('MyController', ['$scope', '$firebase', function($scope, $firebase) {
+        var ref = new Firebase("https://fatburnhub.firebaseio.com/data");
+        var sync = $firebase(ref);
+        var syncObject = sync.$asObject();
+        syncObject.$bindTo($scope, "data");
       }]);
       angular.element(document).ready(function() {
         angular.bootstrap(document, ["ionicApp"]);
@@ -18944,6 +18947,1313 @@ System.register("github:angular-ui/ui-router@0.2.10/release/angular-ui-router", 
   return module.exports;
 });
 
+System.register("github:firebase/angularFire@0.9.0/dist/angularfire", [], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/github/firebase/angularFire@0.9.0/dist/angularfire.js";
+  var __dirname = "jspm_packages/github/firebase/angularFire@0.9.0/dist";
+  (function(exports) {
+    "use strict";
+    angular.module("firebase", []).value("Firebase", exports.Firebase).value('firebaseBatchDelay', 50);
+  })(window);
+  (function() {
+    'use strict';
+    angular.module('firebase').factory('$FirebaseArray', ["$log", "$firebaseUtils", function($log, $firebaseUtils) {
+      function FirebaseArray($firebase, destroyFn, readyPromise) {
+        var self = this;
+        this._observers = [];
+        this.$list = [];
+        this._inst = $firebase;
+        this._promise = readyPromise;
+        this._destroyFn = destroyFn;
+        this._indexCache = {};
+        $firebaseUtils.getPublicMethods(self, function(fn, key) {
+          self.$list[key] = fn.bind(self);
+        });
+        return this.$list;
+      }
+      FirebaseArray.prototype = {
+        $add: function(data) {
+          this._assertNotDestroyed('$add');
+          return this.$inst().$push($firebaseUtils.toJSON(data));
+        },
+        $save: function(indexOrItem) {
+          this._assertNotDestroyed('$save');
+          var self = this;
+          var item = self._resolveItem(indexOrItem);
+          var key = self.$keyAt(item);
+          if (key !== null) {
+            return self.$inst().$set(key, $firebaseUtils.toJSON(item)).then(function(ref) {
+              self.$$notify('child_changed', key);
+              return ref;
+            });
+          } else {
+            return $firebaseUtils.reject('Invalid record; could determine its key: ' + indexOrItem);
+          }
+        },
+        $remove: function(indexOrItem) {
+          this._assertNotDestroyed('$remove');
+          var key = this.$keyAt(indexOrItem);
+          if (key !== null) {
+            return this.$inst().$remove(key);
+          } else {
+            return $firebaseUtils.reject('Invalid record; could not find key: ' + indexOrItem);
+          }
+        },
+        $keyAt: function(indexOrItem) {
+          var item = this._resolveItem(indexOrItem);
+          return this.$$getKey(item);
+        },
+        $indexFor: function(key) {
+          var self = this;
+          var cache = self._indexCache;
+          if (!cache.hasOwnProperty(key) || self.$keyAt(cache[key]) !== key) {
+            var pos = self.$list.findIndex(function(rec) {
+              return self.$$getKey(rec) === key;
+            });
+            if (pos !== -1) {
+              cache[key] = pos;
+            }
+          }
+          return cache.hasOwnProperty(key) ? cache[key] : -1;
+        },
+        $loaded: function(resolve, reject) {
+          var promise = this._promise;
+          if (arguments.length) {
+            promise = promise.then.call(promise, resolve, reject);
+          }
+          return promise;
+        },
+        $inst: function() {
+          return this._inst;
+        },
+        $watch: function(cb, context) {
+          var list = this._observers;
+          list.push([cb, context]);
+          return function() {
+            var i = list.findIndex(function(parts) {
+              return parts[0] === cb && parts[1] === context;
+            });
+            if (i > -1) {
+              list.splice(i, 1);
+            }
+          };
+        },
+        $destroy: function(err) {
+          if (!this._isDestroyed) {
+            this._isDestroyed = true;
+            this.$list.length = 0;
+            $log.debug('destroy called for FirebaseArray: ' + this.$inst().$ref().toString());
+            this._destroyFn(err);
+          }
+        },
+        $getRecord: function(key) {
+          var i = this.$indexFor(key);
+          return i > -1 ? this.$list[i] : null;
+        },
+        $$added: function(snap) {
+          var i = this.$indexFor($firebaseUtils.getKey(snap));
+          if (i === -1) {
+            var rec = snap.val();
+            if (!angular.isObject(rec)) {
+              rec = {$value: rec};
+            }
+            rec.$id = $firebaseUtils.getKey(snap);
+            rec.$priority = snap.getPriority();
+            $firebaseUtils.applyDefaults(rec, this.$$defaults);
+            return rec;
+          }
+          return false;
+        },
+        $$removed: function(snap) {
+          return this.$indexFor($firebaseUtils.getKey(snap)) > -1;
+        },
+        $$updated: function(snap) {
+          var changed = false;
+          var rec = this.$getRecord($firebaseUtils.getKey(snap));
+          if (angular.isObject(rec)) {
+            changed = $firebaseUtils.updateRec(rec, snap);
+            $firebaseUtils.applyDefaults(rec, this.$$defaults);
+          }
+          return changed;
+        },
+        $$moved: function(snap) {
+          var rec = this.$getRecord($firebaseUtils.getKey(snap));
+          if (angular.isObject(rec)) {
+            rec.$priority = snap.getPriority();
+            return true;
+          }
+          return false;
+        },
+        $$error: function(err) {
+          $log.error(err);
+          this.$destroy(err);
+        },
+        $$getKey: function(rec) {
+          return angular.isObject(rec) ? rec.$id : null;
+        },
+        $$process: function(event, rec, prevChild) {
+          var key = this.$$getKey(rec);
+          var changed = false;
+          var curPos;
+          switch (event) {
+            case 'child_added':
+              curPos = this.$indexFor(key);
+              break;
+            case 'child_moved':
+              curPos = this.$indexFor(key);
+              this._spliceOut(key);
+              break;
+            case 'child_removed':
+              changed = this._spliceOut(key) !== null;
+              break;
+            case 'child_changed':
+              changed = true;
+              break;
+            default:
+              throw new Error('Invalid event type: ' + event);
+          }
+          if (angular.isDefined(curPos)) {
+            changed = this._addAfter(rec, prevChild) !== curPos;
+          }
+          if (changed) {
+            this.$$notify(event, key, prevChild);
+          }
+          return changed;
+        },
+        $$notify: function(event, key, prevChild) {
+          var eventData = {
+            event: event,
+            key: key
+          };
+          if (angular.isDefined(prevChild)) {
+            eventData.prevChild = prevChild;
+          }
+          angular.forEach(this._observers, function(parts) {
+            parts[0].call(parts[1], eventData);
+          });
+        },
+        _addAfter: function(rec, prevChild) {
+          var i;
+          if (prevChild === null) {
+            i = 0;
+          } else {
+            i = this.$indexFor(prevChild) + 1;
+            if (i === 0) {
+              i = this.$list.length;
+            }
+          }
+          this.$list.splice(i, 0, rec);
+          this._indexCache[this.$$getKey(rec)] = i;
+          return i;
+        },
+        _spliceOut: function(key) {
+          var i = this.$indexFor(key);
+          if (i > -1) {
+            delete this._indexCache[key];
+            return this.$list.splice(i, 1)[0];
+          }
+          return null;
+        },
+        _resolveItem: function(indexOrItem) {
+          var list = this.$list;
+          if (angular.isNumber(indexOrItem) && indexOrItem >= 0 && list.length >= indexOrItem) {
+            return list[indexOrItem];
+          } else if (angular.isObject(indexOrItem)) {
+            var key = this.$$getKey(indexOrItem);
+            var rec = this.$getRecord(key);
+            return rec === indexOrItem ? rec : null;
+          }
+          return null;
+        },
+        _assertNotDestroyed: function(method) {
+          if (this._isDestroyed) {
+            throw new Error('Cannot call ' + method + ' method on a destroyed $FirebaseArray object');
+          }
+        }
+      };
+      FirebaseArray.$extendFactory = function(ChildClass, methods) {
+        if (arguments.length === 1 && angular.isObject(ChildClass)) {
+          methods = ChildClass;
+          ChildClass = function() {
+            return FirebaseArray.apply(this, arguments);
+          };
+        }
+        return $firebaseUtils.inherit(ChildClass, FirebaseArray, methods);
+      };
+      return FirebaseArray;
+    }]);
+  })();
+  (function() {
+    'use strict';
+    var FirebaseAuth;
+    angular.module('firebase').factory('$firebaseAuth', ['$q', function($q) {
+      return function(ref) {
+        var auth = new FirebaseAuth($q, ref);
+        return auth.construct();
+      };
+    }]);
+    FirebaseAuth = function($q, ref) {
+      this._q = $q;
+      if (typeof ref === 'string') {
+        throw new Error('Please provide a Firebase reference instead of a URL when creating a `$firebaseAuth` object.');
+      }
+      this._ref = ref;
+    };
+    FirebaseAuth.prototype = {
+      construct: function() {
+        this._object = {
+          $authWithCustomToken: this.authWithCustomToken.bind(this),
+          $authAnonymously: this.authAnonymously.bind(this),
+          $authWithPassword: this.authWithPassword.bind(this),
+          $authWithOAuthPopup: this.authWithOAuthPopup.bind(this),
+          $authWithOAuthRedirect: this.authWithOAuthRedirect.bind(this),
+          $authWithOAuthToken: this.authWithOAuthToken.bind(this),
+          $unauth: this.unauth.bind(this),
+          $onAuth: this.onAuth.bind(this),
+          $getAuth: this.getAuth.bind(this),
+          $requireAuth: this.requireAuth.bind(this),
+          $waitForAuth: this.waitForAuth.bind(this),
+          $createUser: this.createUser.bind(this),
+          $changePassword: this.changePassword.bind(this),
+          $removeUser: this.removeUser.bind(this),
+          $sendPasswordResetEmail: this.sendPasswordResetEmail.bind(this)
+        };
+        return this._object;
+      },
+      _onLoginHandler: function(deferred, error, authData) {
+        if (error !== null) {
+          deferred.reject(error);
+        } else {
+          deferred.resolve(authData);
+        }
+      },
+      authWithCustomToken: function(authToken, options) {
+        var deferred = this._q.defer();
+        this._ref.authWithCustomToken(authToken, this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      authAnonymously: function(options) {
+        var deferred = this._q.defer();
+        this._ref.authAnonymously(this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      authWithPassword: function(credentials, options) {
+        var deferred = this._q.defer();
+        this._ref.authWithPassword(credentials, this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      authWithOAuthPopup: function(provider, options) {
+        var deferred = this._q.defer();
+        this._ref.authWithOAuthPopup(provider, this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      authWithOAuthRedirect: function(provider, options) {
+        var deferred = this._q.defer();
+        this._ref.authWithOAuthRedirect(provider, this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      authWithOAuthToken: function(provider, credentials, options) {
+        var deferred = this._q.defer();
+        this._ref.authWithOAuthToken(provider, credentials, this._onLoginHandler.bind(this, deferred), options);
+        return deferred.promise;
+      },
+      unauth: function() {
+        if (this.getAuth() !== null) {
+          this._ref.unauth();
+        }
+      },
+      onAuth: function(callback, context) {
+        var self = this;
+        this._ref.onAuth(callback, context);
+        return function() {
+          self._ref.offAuth(callback, context);
+        };
+      },
+      getAuth: function() {
+        return this._ref.getAuth();
+      },
+      _routerMethodOnAuthCallback: function(deferred, rejectIfAuthDataIsNull, authData) {
+        if (authData !== null) {
+          deferred.resolve(authData);
+        } else if (rejectIfAuthDataIsNull) {
+          deferred.reject("AUTH_REQUIRED");
+        } else {
+          deferred.resolve(null);
+        }
+        this._ref.offAuth(this._routerMethodOnAuthCallback);
+      },
+      requireAuth: function() {
+        var deferred = this._q.defer();
+        this._ref.onAuth(this._routerMethodOnAuthCallback.bind(this, deferred, true));
+        return deferred.promise;
+      },
+      waitForAuth: function() {
+        var deferred = this._q.defer();
+        this._ref.onAuth(this._routerMethodOnAuthCallback.bind(this, deferred, false));
+        return deferred.promise;
+      },
+      createUser: function(email, password) {
+        var deferred = this._q.defer();
+        this._ref.createUser({
+          email: email,
+          password: password
+        }, function(error) {
+          if (error !== null) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      },
+      changePassword: function(email, oldPassword, newPassword) {
+        var deferred = this._q.defer();
+        this._ref.changePassword({
+          email: email,
+          oldPassword: oldPassword,
+          newPassword: newPassword
+        }, function(error) {
+          if (error !== null) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      },
+      removeUser: function(email, password) {
+        var deferred = this._q.defer();
+        this._ref.removeUser({
+          email: email,
+          password: password
+        }, function(error) {
+          if (error !== null) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      },
+      sendPasswordResetEmail: function(email) {
+        var deferred = this._q.defer();
+        this._ref.resetPassword({email: email}, function(error) {
+          if (error !== null) {
+            deferred.reject(error);
+          } else {
+            deferred.resolve();
+          }
+        });
+        return deferred.promise;
+      }
+    };
+  })();
+  (function() {
+    'use strict';
+    angular.module('firebase').factory('$FirebaseObject', ['$parse', '$firebaseUtils', '$log', '$interval', function($parse, $firebaseUtils, $log, $interval) {
+      function FirebaseObject($firebase, destroyFn, readyPromise) {
+        this.$$conf = {
+          promise: readyPromise,
+          inst: $firebase,
+          binding: new ThreeWayBinding(this),
+          destroyFn: destroyFn,
+          listeners: []
+        };
+        Object.defineProperty(this, '$$conf', {value: this.$$conf});
+        this.$id = $firebaseUtils.getKey($firebase.$ref().ref());
+        this.$priority = null;
+        $firebaseUtils.applyDefaults(this, this.$$defaults);
+      }
+      FirebaseObject.prototype = {
+        $save: function() {
+          var self = this;
+          return self.$inst().$set($firebaseUtils.toJSON(self)).then(function(ref) {
+            self.$$notify();
+            return ref;
+          });
+        },
+        $remove: function() {
+          var self = this;
+          $firebaseUtils.trimKeys(this, {});
+          this.$value = null;
+          return self.$inst().$remove(self.$id).then(function(ref) {
+            self.$$notify();
+            return ref;
+          });
+        },
+        $loaded: function(resolve, reject) {
+          var promise = this.$$conf.promise;
+          if (arguments.length) {
+            promise = promise.then.call(promise, resolve, reject);
+          }
+          return promise;
+        },
+        $inst: function() {
+          return this.$$conf.inst;
+        },
+        $bindTo: function(scope, varName) {
+          var self = this;
+          return self.$loaded().then(function() {
+            return self.$$conf.binding.bindTo(scope, varName);
+          });
+        },
+        $watch: function(cb, context) {
+          var list = this.$$conf.listeners;
+          list.push([cb, context]);
+          return function() {
+            var i = list.findIndex(function(parts) {
+              return parts[0] === cb && parts[1] === context;
+            });
+            if (i > -1) {
+              list.splice(i, 1);
+            }
+          };
+        },
+        $destroy: function(err) {
+          var self = this;
+          if (!self.$isDestroyed) {
+            self.$isDestroyed = true;
+            self.$$conf.binding.destroy();
+            $firebaseUtils.each(self, function(v, k) {
+              delete self[k];
+            });
+            self.$$conf.destroyFn(err);
+          }
+        },
+        $$updated: function(snap) {
+          var changed = $firebaseUtils.updateRec(this, snap);
+          $firebaseUtils.applyDefaults(this, this.$$defaults);
+          return changed;
+        },
+        $$error: function(err) {
+          $log.error(err);
+          this.$destroy(err);
+        },
+        $$scopeUpdated: function(newData) {
+          return this.$inst().$set($firebaseUtils.toJSON(newData));
+        },
+        $$notify: function() {
+          var self = this,
+              list = this.$$conf.listeners.slice();
+          angular.forEach(list, function(parts) {
+            parts[0].call(parts[1], {
+              event: 'value',
+              key: self.$id
+            });
+          });
+        },
+        forEach: function(iterator, context) {
+          return $firebaseUtils.each(this, iterator, context);
+        }
+      };
+      FirebaseObject.$extendFactory = function(ChildClass, methods) {
+        if (arguments.length === 1 && angular.isObject(ChildClass)) {
+          methods = ChildClass;
+          ChildClass = function() {
+            FirebaseObject.apply(this, arguments);
+          };
+        }
+        return $firebaseUtils.inherit(ChildClass, FirebaseObject, methods);
+      };
+      function ThreeWayBinding(rec) {
+        this.subs = [];
+        this.scope = null;
+        this.key = null;
+        this.rec = rec;
+      }
+      ThreeWayBinding.prototype = {
+        assertNotBound: function(varName) {
+          if (this.scope) {
+            var msg = 'Cannot bind to ' + varName + ' because this instance is already bound to ' + this.key + '; one binding per instance ' + '(call unbind method or create another $firebase instance)';
+            $log.error(msg);
+            return $firebaseUtils.reject(msg);
+          }
+        },
+        bindTo: function(scope, varName) {
+          function _bind(self) {
+            var sending = false;
+            var parsed = $parse(varName);
+            var rec = self.rec;
+            self.scope = scope;
+            self.varName = varName;
+            function equals(rec) {
+              var parsed = getScope();
+              var newData = $firebaseUtils.scopeData(rec);
+              return angular.equals(parsed, newData) && parsed.$priority === rec.$priority && parsed.$value === rec.$value;
+            }
+            function getScope() {
+              return $firebaseUtils.scopeData(parsed(scope));
+            }
+            function setScope(rec) {
+              parsed.assign(scope, $firebaseUtils.scopeData(rec));
+            }
+            var scopeUpdated = function() {
+              var send = $firebaseUtils.debounce(function() {
+                rec.$$scopeUpdated(getScope())['finally'](function() {
+                  sending = false;
+                });
+              }, 50, 500);
+              if (!equals(rec)) {
+                sending = true;
+                send();
+              }
+            };
+            var recUpdated = function() {
+              if (!sending && !equals(rec)) {
+                setScope(rec);
+              }
+            };
+            function checkMetaVars() {
+              var dat = parsed(scope);
+              if (dat.$value !== rec.$value || dat.$priority !== rec.$priority) {
+                scopeUpdated();
+              }
+            }
+            (function() {
+              var counterKey = '_firebaseCounterForVar' + varName;
+              scope[counterKey] = 0;
+              var to = $interval(function() {
+                scope[counterKey]++;
+              }, 51, 0, false);
+              self.subs.push(scope.$watch(counterKey, checkMetaVars));
+              self.subs.push(function() {
+                $interval.cancel(to);
+                delete scope[counterKey];
+              });
+            })();
+            setScope(rec);
+            self.subs.push(scope.$on('$destroy', self.unbind.bind(self)));
+            self.subs.push(scope.$watch(varName, scopeUpdated, true));
+            self.subs.push(rec.$watch(recUpdated));
+            return self.unbind.bind(self);
+          }
+          return this.assertNotBound(varName) || _bind(this);
+        },
+        unbind: function() {
+          if (this.scope) {
+            angular.forEach(this.subs, function(unbind) {
+              unbind();
+            });
+            this.subs = [];
+            this.scope = null;
+            this.key = null;
+          }
+        },
+        destroy: function() {
+          this.unbind();
+          this.rec = null;
+        }
+      };
+      return FirebaseObject;
+    }]);
+  })();
+  (function() {
+    'use strict';
+    angular.module("firebase").factory("$firebase", ["$firebaseUtils", "$firebaseConfig", function($firebaseUtils, $firebaseConfig) {
+      function AngularFire(ref, config) {
+        if (!(this instanceof AngularFire)) {
+          return new AngularFire(ref, config);
+        }
+        this._config = $firebaseConfig(config);
+        this._ref = ref;
+        this._arraySync = null;
+        this._objectSync = null;
+        this._assertValidConfig(ref, this._config);
+      }
+      AngularFire.prototype = {
+        $ref: function() {
+          return this._ref;
+        },
+        $push: function(data) {
+          var def = $firebaseUtils.defer();
+          var ref = this._ref.ref().push();
+          var done = this._handle(def, ref);
+          if (arguments.length > 0) {
+            ref.set(data, done);
+          } else {
+            done();
+          }
+          return def.promise;
+        },
+        $set: function(key, data) {
+          var ref = this._ref;
+          var def = $firebaseUtils.defer();
+          if (arguments.length > 1) {
+            ref = ref.ref().child(key);
+          } else {
+            data = key;
+          }
+          if (angular.isFunction(ref.set) || !angular.isObject(data)) {
+            ref.ref().set(data, this._handle(def, ref));
+          } else {
+            var dataCopy = angular.extend({}, data);
+            ref.once('value', function(snap) {
+              snap.forEach(function(ss) {
+                if (!dataCopy.hasOwnProperty($firebaseUtils.getKey(ss))) {
+                  dataCopy[$firebaseUtils.getKey(ss)] = null;
+                }
+              });
+              ref.ref().update(dataCopy, this._handle(def, ref));
+            }, this);
+          }
+          return def.promise;
+        },
+        $remove: function(key) {
+          var ref = this._ref,
+              self = this,
+              promise;
+          var def = $firebaseUtils.defer();
+          if (arguments.length > 0) {
+            ref = ref.ref().child(key);
+          }
+          if (angular.isFunction(ref.remove)) {
+            ref.remove(self._handle(def, ref));
+            promise = def.promise;
+          } else {
+            var promises = [];
+            ref.once('value', function(snap) {
+              snap.forEach(function(ss) {
+                var d = $firebaseUtils.defer();
+                promises.push(d);
+                ss.ref().remove(self._handle(d, ss.ref()));
+              }, self);
+            });
+            promise = $firebaseUtils.allPromises(promises).then(function() {
+              return ref;
+            });
+          }
+          return promise;
+        },
+        $update: function(key, data) {
+          var ref = this._ref.ref();
+          var def = $firebaseUtils.defer();
+          if (arguments.length > 1) {
+            ref = ref.child(key);
+          } else {
+            data = key;
+          }
+          ref.update(data, this._handle(def, ref));
+          return def.promise;
+        },
+        $transaction: function(key, valueFn, applyLocally) {
+          var ref = this._ref.ref();
+          if (angular.isFunction(key)) {
+            applyLocally = valueFn;
+            valueFn = key;
+          } else {
+            ref = ref.child(key);
+          }
+          applyLocally = !!applyLocally;
+          var def = $firebaseUtils.defer();
+          ref.transaction(valueFn, function(err, committed, snap) {
+            if (err) {
+              def.reject(err);
+            } else {
+              def.resolve(committed ? snap : null);
+            }
+          }, applyLocally);
+          return def.promise;
+        },
+        $asObject: function() {
+          if (!this._objectSync || this._objectSync.isDestroyed) {
+            this._objectSync = new SyncObject(this, this._config.objectFactory);
+          }
+          return this._objectSync.getObject();
+        },
+        $asArray: function() {
+          if (!this._arraySync || this._arraySync.isDestroyed) {
+            this._arraySync = new SyncArray(this, this._config.arrayFactory);
+          }
+          return this._arraySync.getArray();
+        },
+        _handle: function(def) {
+          var args = Array.prototype.slice.call(arguments, 1);
+          return function(err) {
+            if (err) {
+              def.reject(err);
+            } else {
+              def.resolve.apply(def, args);
+            }
+          };
+        },
+        _assertValidConfig: function(ref, cnf) {
+          $firebaseUtils.assertValidRef(ref, 'Must pass a valid Firebase reference ' + 'to $firebase (not a string or URL)');
+          if (!angular.isFunction(cnf.arrayFactory)) {
+            throw new Error('config.arrayFactory must be a valid function');
+          }
+          if (!angular.isFunction(cnf.objectFactory)) {
+            throw new Error('config.objectFactory must be a valid function');
+          }
+        }
+      };
+      function SyncArray($inst, ArrayFactory) {
+        function destroy(err) {
+          self.isDestroyed = true;
+          var ref = $inst.$ref();
+          ref.off('child_added', created);
+          ref.off('child_moved', moved);
+          ref.off('child_changed', updated);
+          ref.off('child_removed', removed);
+          array = null;
+          resolve(err || 'destroyed');
+        }
+        function init() {
+          var ref = $inst.$ref();
+          ref.on('child_added', created, error);
+          ref.on('child_moved', moved, error);
+          ref.on('child_changed', updated, error);
+          ref.on('child_removed', removed, error);
+          ref.once('value', function() {
+            resolve(null);
+          }, resolve);
+        }
+        function _resolveFn(err) {
+          if (def) {
+            if (err) {
+              def.reject(err);
+            } else {
+              def.resolve(array);
+            }
+            def = null;
+          }
+        }
+        function assertArray(arr) {
+          if (!angular.isArray(arr)) {
+            var type = Object.prototype.toString.call(arr);
+            throw new Error('arrayFactory must return a valid array that passes ' + 'angular.isArray and Array.isArray, but received "' + type + '"');
+          }
+        }
+        var def = $firebaseUtils.defer();
+        var array = new ArrayFactory($inst, destroy, def.promise);
+        var batch = $firebaseUtils.batch();
+        var created = batch(function(snap, prevChild) {
+          var rec = array.$$added(snap, prevChild);
+          if (rec) {
+            array.$$process('child_added', rec, prevChild);
+          }
+        });
+        var updated = batch(function(snap) {
+          var rec = array.$getRecord($firebaseUtils.getKey(snap));
+          if (rec) {
+            var changed = array.$$updated(snap);
+            if (changed) {
+              array.$$process('child_changed', rec);
+            }
+          }
+        });
+        var moved = batch(function(snap, prevChild) {
+          var rec = array.$getRecord($firebaseUtils.getKey(snap));
+          if (rec) {
+            var confirmed = array.$$moved(snap, prevChild);
+            if (confirmed) {
+              array.$$process('child_moved', rec, prevChild);
+            }
+          }
+        });
+        var removed = batch(function(snap) {
+          var rec = array.$getRecord($firebaseUtils.getKey(snap));
+          if (rec) {
+            var confirmed = array.$$removed(snap);
+            if (confirmed) {
+              array.$$process('child_removed', rec);
+            }
+          }
+        });
+        var error = batch(array.$$error, array);
+        var resolve = batch(_resolveFn);
+        var self = this;
+        self.isDestroyed = false;
+        self.getArray = function() {
+          return array;
+        };
+        assertArray(array);
+        init();
+      }
+      function SyncObject($inst, ObjectFactory) {
+        function destroy(err) {
+          self.isDestroyed = true;
+          ref.off('value', applyUpdate);
+          obj = null;
+          resolve(err || 'destroyed');
+        }
+        function init() {
+          ref.on('value', applyUpdate, error);
+          ref.once('value', function() {
+            resolve(null);
+          }, resolve);
+        }
+        function _resolveFn(err) {
+          if (def) {
+            if (err) {
+              def.reject(err);
+            } else {
+              def.resolve(obj);
+            }
+            def = null;
+          }
+        }
+        var def = $firebaseUtils.defer();
+        var obj = new ObjectFactory($inst, destroy, def.promise);
+        var ref = $inst.$ref();
+        var batch = $firebaseUtils.batch();
+        var applyUpdate = batch(function(snap) {
+          var changed = obj.$$updated(snap);
+          if (changed) {
+            obj.$$notify();
+          }
+        });
+        var error = batch(obj.$$error, obj);
+        var resolve = batch(_resolveFn);
+        var self = this;
+        self.isDestroyed = false;
+        self.getObject = function() {
+          return obj;
+        };
+        init();
+      }
+      return AngularFire;
+    }]);
+  })();
+  'use strict';
+  if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(searchElement, fromIndex) {
+      if (this === undefined || this === null) {
+        throw new TypeError("'this' is null or not defined");
+      }
+      var length = this.length >>> 0;
+      fromIndex = +fromIndex || 0;
+      if (Math.abs(fromIndex) === Infinity) {
+        fromIndex = 0;
+      }
+      if (fromIndex < 0) {
+        fromIndex += length;
+        if (fromIndex < 0) {
+          fromIndex = 0;
+        }
+      }
+      for (; fromIndex < length; fromIndex++) {
+        if (this[fromIndex] === searchElement) {
+          return fromIndex;
+        }
+      }
+      return -1;
+    };
+  }
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function(oThis) {
+      if (typeof this !== "function") {
+        throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+      }
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function() {},
+          fBound = function() {
+            return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+      return fBound;
+    };
+  }
+  if (!Array.prototype.findIndex) {
+    Object.defineProperty(Array.prototype, 'findIndex', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: function(predicate) {
+        if (this == null) {
+          throw new TypeError('Array.prototype.find called on null or undefined');
+        }
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        var value;
+        for (var i = 0; i < length; i++) {
+          if (i in list) {
+            value = list[i];
+            if (predicate.call(thisArg, value, i, list)) {
+              return i;
+            }
+          }
+        }
+        return -1;
+      }
+    });
+  }
+  if (typeof Object.create != 'function') {
+    (function() {
+      var F = function() {};
+      Object.create = function(o) {
+        if (arguments.length > 1) {
+          throw new Error('Second argument not supported');
+        }
+        if (o === null) {
+          throw new Error('Cannot set a null [[Prototype]]');
+        }
+        if (typeof o != 'object') {
+          throw new TypeError('Argument must be an object');
+        }
+        F.prototype = o;
+        return new F();
+      };
+    })();
+  }
+  if (!Object.keys) {
+    Object.keys = (function() {
+      'use strict';
+      var hasOwnProperty = Object.prototype.hasOwnProperty,
+          hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+          dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'],
+          dontEnumsLength = dontEnums.length;
+      return function(obj) {
+        if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+          throw new TypeError('Object.keys called on non-object');
+        }
+        var result = [],
+            prop,
+            i;
+        for (prop in obj) {
+          if (hasOwnProperty.call(obj, prop)) {
+            result.push(prop);
+          }
+        }
+        if (hasDontEnumBug) {
+          for (i = 0; i < dontEnumsLength; i++) {
+            if (hasOwnProperty.call(obj, dontEnums[i])) {
+              result.push(dontEnums[i]);
+            }
+          }
+        }
+        return result;
+      };
+    }());
+  }
+  if (typeof Object.getPrototypeOf !== "function") {
+    if (typeof"test".__proto__ === "object") {
+      Object.getPrototypeOf = function(object) {
+        return object.__proto__;
+      };
+    } else {
+      Object.getPrototypeOf = function(object) {
+        return object.constructor.prototype;
+      };
+    }
+  }
+  (function() {
+    'use strict';
+    angular.module('firebase').factory('$firebaseConfig', ["$FirebaseArray", "$FirebaseObject", "$injector", function($FirebaseArray, $FirebaseObject, $injector) {
+      return function(configOpts) {
+        var opts = angular.extend({}, configOpts);
+        if (typeof opts.objectFactory === 'string') {
+          opts.objectFactory = $injector.get(opts.objectFactory);
+        }
+        if (typeof opts.arrayFactory === 'string') {
+          opts.arrayFactory = $injector.get(opts.arrayFactory);
+        }
+        return angular.extend({
+          arrayFactory: $FirebaseArray,
+          objectFactory: $FirebaseObject
+        }, opts);
+      };
+    }]).factory('$firebaseUtils', ["$q", "$timeout", "firebaseBatchDelay", function($q, $timeout, firebaseBatchDelay) {
+      var utils = {
+        batch: function(wait, maxWait) {
+          wait = typeof('wait') === 'number' ? wait : firebaseBatchDelay;
+          if (!maxWait) {
+            maxWait = wait * 10 || 100;
+          }
+          var queue = [];
+          var start;
+          var cancelTimer;
+          function createBatchFn(fn, context) {
+            if (typeof(fn) !== 'function') {
+              throw new Error('Must provide a function to be batched. Got ' + fn);
+            }
+            return function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              queue.push([fn, context, args]);
+              resetTimer();
+            };
+          }
+          function resetTimer() {
+            if (cancelTimer) {
+              cancelTimer();
+              cancelTimer = null;
+            }
+            if (start && Date.now() - start > maxWait) {
+              utils.compile(runNow);
+            } else {
+              if (!start) {
+                start = Date.now();
+              }
+              cancelTimer = utils.wait(runNow, wait);
+            }
+          }
+          function runNow() {
+            cancelTimer = null;
+            start = null;
+            var copyList = queue.slice(0);
+            queue = [];
+            angular.forEach(copyList, function(parts) {
+              parts[0].apply(parts[1], parts[2]);
+            });
+          }
+          return createBatchFn;
+        },
+        debounce: function(fn, ctx, wait, maxWait) {
+          var start,
+              cancelTimer,
+              args;
+          if (typeof(ctx) === 'number') {
+            maxWait = wait;
+            wait = ctx;
+            ctx = null;
+          }
+          if (typeof wait !== 'number') {
+            throw new Error('Must provide a valid integer for wait. Try 0 for a default');
+          }
+          if (typeof(fn) !== 'function') {
+            throw new Error('Must provide a valid function to debounce');
+          }
+          if (!maxWait) {
+            maxWait = wait * 10 || 100;
+          }
+          function resetTimer() {
+            if (cancelTimer) {
+              cancelTimer();
+              cancelTimer = null;
+            }
+            if (start && Date.now() - start > maxWait) {
+              utils.compile(runNow);
+            } else {
+              if (!start) {
+                start = Date.now();
+              }
+              cancelTimer = utils.wait(runNow, wait);
+            }
+          }
+          function runNow() {
+            cancelTimer = null;
+            start = null;
+            fn.apply(ctx, args);
+          }
+          function debounced() {
+            args = Array.prototype.slice.call(arguments, 0);
+            resetTimer();
+          }
+          debounced.running = function() {
+            return start > 0;
+          };
+          return debounced;
+        },
+        assertValidRef: function(ref, msg) {
+          if (!angular.isObject(ref) || typeof(ref.ref) !== 'function' || typeof(ref.ref().transaction) !== 'function') {
+            throw new Error(msg || 'Invalid Firebase reference');
+          }
+        },
+        inherit: function(ChildClass, ParentClass, methods) {
+          var childMethods = ChildClass.prototype;
+          ChildClass.prototype = Object.create(ParentClass.prototype);
+          ChildClass.prototype.constructor = ChildClass;
+          angular.forEach(Object.keys(childMethods), function(k) {
+            ChildClass.prototype[k] = childMethods[k];
+          });
+          if (angular.isObject(methods)) {
+            angular.extend(ChildClass.prototype, methods);
+          }
+          return ChildClass;
+        },
+        getPrototypeMethods: function(inst, iterator, context) {
+          var methods = {};
+          var objProto = Object.getPrototypeOf({});
+          var proto = angular.isFunction(inst) && angular.isObject(inst.prototype) ? inst.prototype : Object.getPrototypeOf(inst);
+          while (proto && proto !== objProto) {
+            for (var key in proto) {
+              if (proto.hasOwnProperty(key) && !methods.hasOwnProperty(key)) {
+                methods[key] = true;
+                iterator.call(context, proto[key], key, proto);
+              }
+            }
+            proto = Object.getPrototypeOf(proto);
+          }
+        },
+        getPublicMethods: function(inst, iterator, context) {
+          utils.getPrototypeMethods(inst, function(m, k) {
+            if (typeof(m) === 'function' && k.charAt(0) !== '_') {
+              iterator.call(context, m, k);
+            }
+          });
+        },
+        defer: function() {
+          return $q.defer();
+        },
+        reject: function(msg) {
+          var def = utils.defer();
+          def.reject(msg);
+          return def.promise;
+        },
+        resolve: function() {
+          var def = utils.defer();
+          def.resolve.apply(def, arguments);
+          return def.promise;
+        },
+        wait: function(fn, wait) {
+          var to = $timeout(fn, wait || 0);
+          return function() {
+            if (to) {
+              $timeout.cancel(to);
+              to = null;
+            }
+          };
+        },
+        compile: function(fn) {
+          return $timeout(fn || function() {});
+        },
+        deepCopy: function(obj) {
+          if (!angular.isObject(obj)) {
+            return obj;
+          }
+          var newCopy = angular.isArray(obj) ? obj.slice() : angular.extend({}, obj);
+          for (var key in newCopy) {
+            if (newCopy.hasOwnProperty(key)) {
+              if (angular.isObject(newCopy[key])) {
+                newCopy[key] = utils.deepCopy(newCopy[key]);
+              }
+            }
+          }
+          return newCopy;
+        },
+        trimKeys: function(dest, source) {
+          utils.each(dest, function(v, k) {
+            if (!source.hasOwnProperty(k)) {
+              delete dest[k];
+            }
+          });
+        },
+        extendData: function(dest, source) {
+          utils.each(source, function(v, k) {
+            dest[k] = utils.deepCopy(v);
+          });
+          return dest;
+        },
+        scopeData: function(dataOrRec) {
+          var data = {
+            $id: dataOrRec.$id,
+            $priority: dataOrRec.$priority
+          };
+          if (dataOrRec.hasOwnProperty('$value')) {
+            data.$value = dataOrRec.$value;
+          }
+          return utils.extendData(data, dataOrRec);
+        },
+        updateRec: function(rec, snap) {
+          var data = snap.val();
+          var oldData = angular.extend({}, rec);
+          if (!angular.isObject(data)) {
+            rec.$value = data;
+            data = {};
+          } else {
+            delete rec.$value;
+          }
+          utils.trimKeys(rec, data);
+          angular.extend(rec, data);
+          rec.$priority = snap.getPriority();
+          return !angular.equals(oldData, rec) || oldData.$value !== rec.$value || oldData.$priority !== rec.$priority;
+        },
+        applyDefaults: function(rec, defaults) {
+          if (angular.isObject(defaults)) {
+            angular.forEach(defaults, function(v, k) {
+              if (!rec.hasOwnProperty(k)) {
+                rec[k] = v;
+              }
+            });
+          }
+          return rec;
+        },
+        dataKeys: function(obj) {
+          var out = [];
+          utils.each(obj, function(v, k) {
+            out.push(k);
+          });
+          return out;
+        },
+        each: function(obj, iterator, context) {
+          if (angular.isObject(obj)) {
+            for (var k in obj) {
+              if (obj.hasOwnProperty(k)) {
+                var c = k.charAt(0);
+                if (c !== '_' && c !== '$' && c !== '.') {
+                  iterator.call(context, obj[k], k, obj);
+                }
+              }
+            }
+          } else if (angular.isArray(obj)) {
+            for (var i = 0,
+                len = obj.length; i < len; i++) {
+              iterator.call(context, obj[i], i, obj);
+            }
+          }
+          return obj;
+        },
+        getKey: function(refOrSnapshot) {
+          return (typeof refOrSnapshot.key === 'function') ? refOrSnapshot.key() : refOrSnapshot.name();
+        },
+        toJSON: function(rec) {
+          var dat;
+          if (!angular.isObject(rec)) {
+            rec = {$value: rec};
+          }
+          if (angular.isFunction(rec.toJSON)) {
+            dat = rec.toJSON();
+          } else {
+            dat = {};
+            utils.each(rec, function(v, k) {
+              dat[k] = stripDollarPrefixedKeys(v);
+            });
+          }
+          if (angular.isDefined(rec.$value) && Object.keys(dat).length === 0 && rec.$value !== null) {
+            dat['.value'] = rec.$value;
+          }
+          if (angular.isDefined(rec.$priority) && Object.keys(dat).length > 0 && rec.$priority !== null) {
+            dat['.priority'] = rec.$priority;
+          }
+          angular.forEach(dat, function(v, k) {
+            if (k.match(/[.$\[\]#\/]/) && k !== '.value' && k !== '.priority') {
+              throw new Error('Invalid key ' + k + ' (cannot contain .$[]#)');
+            } else if (angular.isUndefined(v)) {
+              throw new Error('Key ' + k + ' was undefined. Cannot pass undefined in JSON. Use null instead.');
+            }
+          });
+          return dat;
+        },
+        batchDelay: firebaseBatchDelay,
+        allPromises: $q.all.bind($q)
+      };
+      return utils;
+    }]);
+    function stripDollarPrefixedKeys(data) {
+      if (!angular.isObject(data)) {
+        return data;
+      }
+      var out = angular.isArray(data) ? [] : {};
+      angular.forEach(data, function(v, k) {
+        if (typeof k !== 'string' || k.charAt(0) !== '$') {
+          out[k] = stripDollarPrefixedKeys(v);
+        }
+      });
+      return out;
+    }
+  })();
+  
+  global.define = __define;
+  return module.exports;
+});
+
 System.register("github:systemjs/plugin-css@0.1.0", ["github:systemjs/plugin-css@0.1.0/css"], true, function(require, exports, module) {
   var global = System.global;
   var __define = global.define;
@@ -18999,6 +20309,18 @@ System.register("github:angular-ui/ui-router@0.2.10", ["github:angular-ui/ui-rou
   var __filename = "jspm_packages/github/angular-ui/ui-router@0.2.10.js";
   var __dirname = "jspm_packages/github/angular-ui";
   module.exports = require("github:angular-ui/ui-router@0.2.10/release/angular-ui-router");
+  
+  global.define = __define;
+  return module.exports;
+});
+
+System.register("github:firebase/angularFire@0.9.0", ["github:firebase/angularFire@0.9.0/dist/angularfire"], true, function(require, exports, module) {
+  var global = System.global;
+  var __define = global.define;
+  global.define = undefined;
+  var __filename = "jspm_packages/github/firebase/angularFire@0.9.0.js";
+  var __dirname = "jspm_packages/github/firebase";
+  module.exports = require("github:firebase/angularFire@0.9.0/dist/angularfire");
   
   global.define = __define;
   return module.exports;
