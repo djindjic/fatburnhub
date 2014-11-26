@@ -1,6 +1,7 @@
 import "ionic";
-import "angularFire";
 import angular from "angular";
+import "firebase";
+import "angularFire";
 
 angular.module('ionicApp', ['ionic', 'firebase'])
 

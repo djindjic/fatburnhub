@@ -23,7 +23,17 @@ var styles = function() {
       .pipe($.minifyCss({
         keepSpecialComments: 0
       }))
-      .pipe(gulp.dest('./www'))
+      .pipe(gulp.dest('./www/styles'))
+      .on('end', fulfil);
+    });
+};
+
+var fonts = function() {
+  return new Promise(function (fulfil) {
+    $.util.log('Rebuilding app fonts');
+    gulp.src(['app/bundle_assets/fonts/**/*'])
+      .pipe($.flatten())
+      .pipe(gulp.dest('./www/fonts'))
       .on('end', fulfil);
     });
 };
@@ -61,6 +71,7 @@ gulp.task('default',
   function() {
     clean(['www'])
     .then(styles)
+    .then(fonts)
     .then(indexHtml)
     .then(startServer);
   }

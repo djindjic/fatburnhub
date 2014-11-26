@@ -1,0 +1,14 @@
+{
+  "registry": "jspm",
+  "files": ["angularfire.js"],
+  "shim": {
+    "angularfire": ["firebase", "angular"]
+  },
+  "dependencies": {
+    "angular": "^1.3.2",
+    "firebase": "^2.0.4"
+  },
+  "buildConfig": {
+    "uglify": "true"
+  }
+}
