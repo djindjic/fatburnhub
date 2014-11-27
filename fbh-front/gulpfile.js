@@ -69,10 +69,11 @@ var clean = function (paths) {
 
 gulp.task('default',
   function() {
-    clean(['www'])
-    .then(styles)
-    .then(fonts)
-    .then(indexHtml)
-    .then(startServer);
+    // clean(['www'])
+    // .then(styles)
+    // .then(fonts)
+    // .then(indexHtml)
+    // .then(startServer);
+    startServer();
   }
 );

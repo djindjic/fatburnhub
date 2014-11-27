@@ -35,7 +35,7 @@ System.config({
     "github:angular/bower-angular-sanitize": "1.3.4",
     "github:driftyco/ionic-bower": "1.0.0-beta.13",
     "github:firebase/angularFire": "0.9.0",
-    "github:firebase/firebase-bower": "2.0.4",
+    "github:firebase/firebase-bower": "2.0.5",
     "github:systemjs/plugin-css": "0.1.0"
   }
 });

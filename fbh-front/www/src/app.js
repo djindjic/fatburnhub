@@ -2,8 +2,9 @@ import "ionic";
 import angular from "angular";
 import "firebase";
 import "angularFire";
+import ApplicationConfiguration from "src/application_configuration";
 
-angular.module('ionicApp', ['ionic', 'firebase'])
+angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies)
 
 .controller('MyController', ['$scope', '$firebase', function ($scope, $firebase) {
 	var ref = new Firebase("https://fatburnhub.firebaseio.com/data");
@@ -16,5 +17,5 @@ angular.module('ionicApp', ['ionic', 'firebase'])
 }]);
 
 angular.element(document).ready(function() {
-  angular.bootstrap(document, ["ionicApp"]);
-}); 
+  angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
+});
