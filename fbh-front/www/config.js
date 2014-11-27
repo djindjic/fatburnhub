@@ -7,36 +7,26 @@ System.config({
 
 System.config({
   "map": {
-    "angular": "github:angular/bower-angular@^1.3.3",
-    "angularFire": "github:firebase/angularFire@^0.9.0",
-    "firebase": "github:firebase/firebase-bower@^2.0.4",
+    "angular": "github:angular/bower-angular@1.3.4",
+    "angularfire": "github:firebase/angularfire@0.9.0",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.13",
     "github:angular/bower-angular-animate@1.3.4": {
-      "angular": "github:angular/bower-angular@^1.3.3"
+      "angular": "github:angular/bower-angular@1.3.4"
     },
     "github:angular/bower-angular-sanitize@1.3.4": {
-      "angular": "github:angular/bower-angular@^1.3.3"
+      "angular": "github:angular/bower-angular@1.3.4"
     },
     "github:driftyco/ionic-bower@1.0.0-beta.13": {
-      "css": "github:systemjs/plugin-css@0.1.0",
+      "angular": "github:angular/bower-angular@1.3.4",
+      "angular-animate": "github:angular/bower-angular-animate@1.3.4",
+      "angular-sanitize": "github:angular/bower-angular-sanitize@1.3.4",
       "angular-ui-router": "github:angular-ui/ui-router@0.2.10",
-      "angular": "github:angular/bower-angular@^1.3.3",
-      "angular-sanitize": "github:angular/bower-angular-sanitize@^1.3.2",
-      "angular-animate": "github:angular/bower-angular-animate@^1.3.2"
+      "css": "github:systemjs/plugin-css@0.1.0"
+    },
+    "github:firebase/angularfire@0.9.0": {
+      "angular": "github:angular/bower-angular@1.3.4",
+      "firebase": "github:firebase/firebase-bower@2.0.5"
     }
-  }
-});
-
-System.config({
-  "versions": {
-    "github:angular-ui/ui-router": "0.2.10",
-    "github:angular/bower-angular": "1.3.4",
-    "github:angular/bower-angular-animate": "1.3.4",
-    "github:angular/bower-angular-sanitize": "1.3.4",
-    "github:driftyco/ionic-bower": "1.0.0-beta.13",
-    "github:firebase/angularFire": "0.9.0",
-    "github:firebase/firebase-bower": "2.0.5",
-    "github:systemjs/plugin-css": "0.1.0"
   }
 });
 

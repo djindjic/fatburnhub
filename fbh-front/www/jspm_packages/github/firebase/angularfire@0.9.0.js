@@ -1,0 +1,1 @@
+module.exports = require("github:firebase/angularfire@0.9.0/angularfire");

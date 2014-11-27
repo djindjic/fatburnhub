@@ -25,10 +25,7 @@
   ],
   "main": "dist/angularfire.js",
   "files": [
-    "dist/**",
-    "LICENSE",
-    "README.md",
-    "package.json"
+    "dist/angularfire.js"
   ],
   "devDependencies": {
     "coveralls": "^2.11.1",
@@ -55,8 +52,18 @@
     "load-grunt-tasks": "~0.2.0",
     "protractor": "^1.0.0"
   },
+  "directories": {
+    "lib": "dist"
+  },
+  "shim": {
+    "angularfire": [
+      "firebase",
+      "angular"
+    ]
+  },
+  "registry": "jspm",
   "dependencies": {
-    "angular": "1.3.x",
-    "firebase": "2.0.x"
+    "angular": "^1.3.2",
+    "firebase": "^2.0.4"
   }
 }
