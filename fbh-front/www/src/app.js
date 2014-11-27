@@ -1,7 +1,6 @@
 import "ionic";
 import angular from "angular";
-import "firebase";
-import "angularFire";
+import "angularfire";
 import ApplicationConfiguration from "src/application_configuration";
 
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies)
