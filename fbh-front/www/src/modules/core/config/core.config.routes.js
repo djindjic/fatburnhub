@@ -1,24 +1,31 @@
-(function() {
-  'use strict';
+angular.module('core').config(function($stateProvider, $urlRouterProvider){
+      // For any unmatched url, send to /route1
+      $urlRouterProvider.otherwise("/about")
+      
+      $stateProvider
+        // state('main', {
+        //     url: "/",
+        //     templateUrl: "about.html"
+        // })
 
-  angular.module('core').config(['$routeProvider',
-    function($routeProvider) {
-      $routeProvider
-        .when('/', {
-          templateUrl: 'main.html',
-          controller: 'MainCtrl'
+        .state('about', {
+            url: "/about",
+            templateUrl: "about.html"
         })
-        .when('/about', {
-          templateUrl: 'about.html',
-          controller: 'AboutCtrl'
+          
+        .state('contact', {
+            url: "/contact",
+            templateUrl: "contact.html"
         })
-        .when('/contact', {
-          templateUrl: 'contact.html',
-          controller: 'ContactCtrl'
-        })
-        .otherwise({
-          redirectTo: '/'
-        });
-    }
-  ]);
-})();
+    });
+
+
+
+angular.module('core').run(function($templateCache) {
+  $templateCache.put('about.html', 'about');
+  $templateCache.put('contact.html', 'contact');
+  $templateCache.put('main.html', 'main');
+});
+
+
+

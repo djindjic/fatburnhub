@@ -1,12 +1,12 @@
-import angular from 'angular';
-
 let ApplicationConfiguration = {
-  applicationModuleName: 'fatburnhub',
-  applicationModuleVendorDependencies: ['ionic', 'firebase'],
+  applicationModuleName: 'core',
+  applicationModuleVendorDependencies: ['ionic', 'firebase', 'ui.router'],
 
-  registerModule(moduleName, dependencies) {
-    angular.module(moduleName, dependencies || applicationModuleVendorDependencies);
-    angular.module(applicationModuleName).requires.push(moduleName);
+  registerModule(moduleName) {
+    angular.module(moduleName, this.applicationModuleVendorDependencies);
+    angular.module(this.applicationModuleName).requires.push(moduleName);
+
+    return angular.module(moduleName);
   }
 };
 

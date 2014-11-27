@@ -1,11 +1,37 @@
 import "ionic";
-import angular from "angular";
 import "angularfire";
 import ApplicationConfiguration from "src/application_configuration";
 
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies)
 
-.controller('MyController', ['$scope', '$firebase', function ($scope, $firebase) {
+angular.module('core').config(function($stateProvider, $urlRouterProvider){
+      // For any unmatched url, send to /route1
+      $urlRouterProvider.otherwise("/about")
+      
+      $stateProvider
+        // state('main', {
+        //     url: "/",
+        //     templateUrl: "about.html"
+        // })
+
+        .state('about', {
+            url: "/about",
+            templateUrl: "about.html"
+        })
+          
+        .state('contact', {
+            url: "/contact",
+            templateUrl: "contact.html"
+        })
+    });
+
+angular.module('core').run(function($templateCache) {
+  $templateCache.put('about.html', 'about');
+  $templateCache.put('contact.html', 'contact');
+  $templateCache.put('main.html', 'main');
+});
+
+angular.module('core').controller('MyController', ['$scope', '$firebase', function ($scope, $firebase) {
 	var ref = new Firebase("https://fatburnhub.firebaseio.com/data");
     var sync = $firebase(ref);
 	  // download the data into a local object
@@ -15,6 +41,15 @@ angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfig
 	  syncObject.$bindTo($scope, "data");
 }]);
 
+angular.module("core").config(['$locationProvider',
+    function($locationProvider) {
+      $locationProvider.html5Mode(true).hashPrefix('!');
+    }
+  ]);
+
+
+//System.import("src/modules/core/core.module");
+//System.import("src/modules/core/config/core.config.routes");
 angular.element(document).ready(function() {
-  angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
+  angular.bootstrap(document, ["core"]);
 });

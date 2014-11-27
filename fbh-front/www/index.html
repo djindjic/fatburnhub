@@ -1,18 +1,22 @@
 <!doctype html>
 <html>
-  <body ng-controller="MyController">
-    <div class="bar bar-header bar-positive">
-      <h1 class="title">fatburnhub</h1>
-    </div>
-    <div ng-view></div>
+  <head>
+    <base href="/">
+  </head>
+  <body>
+    <ion-header-bar align-title="left" class="bar-positive">
+      <div ng-controller="MyController">
+        <h1 class="title">{{data.greetMe}}</h1>
+      </div>
+    </ion-header-bar>
+    <ion-content>
+      <div ui-view></div>
+    </ion-content>
     <div class="tabs tabs-icon-only">
-      <a class="tab-item" href="/">
-        <i class="icon ion-home"></i>
-      </a>
-      <a class="tab-item" href="/about">
+      <a class="tab-item" ui-sref="about">
         <i class="icon ion-star"></i>
       </a>
-      <a class="tab-item" href="/contact">
+      <a class="tab-item" ui-sref="contact">
         <i class="icon ion-gear-a"></i>
       </a>
     </div>
