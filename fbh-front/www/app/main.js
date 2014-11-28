@@ -20,15 +20,12 @@ angular.module('fatburnhub').controller('MyController', ['$scope', '$firebase', 
 	  syncObject.$bindTo($scope, 'data');
 }]);
 
-angular.module("fatburnhub").config(['$locationProvider',
-  function($locationProvider) {
-    $locationProvider.html5Mode(true).hashPrefix('!');
-  }
-]);
+// angular.module("fatburnhub").config(['$locationProvider',
+//   function($locationProvider) {
+//     $locationProvider.html5Mode(true).hashPrefix('!');
+//   }
+// ]);
 
-
-//System.import('src/modules/core/core.module');
-//System.import('src/modules/core/config/core.config.routes');
 angular.element(document).ready(function() {
   angular.bootstrap(document, ['fatburnhub']);
 });
