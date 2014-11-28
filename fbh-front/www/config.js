@@ -9,7 +9,9 @@ System.config({
   "map": {
     "angular": "github:angular/bower-angular@1.3.4",
     "angularfire": "github:firebase/angularfire@0.9.0",
+    "css": "github:systemjs/plugin-css@0.1.0",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.13",
+    "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular/bower-angular-animate@1.3.4": {
       "angular": "github:angular/bower-angular@1.3.4"
     },

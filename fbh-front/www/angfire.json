@@ -1,9 +1,0 @@
-{
-  "files": ["angularfire.js"],
-  "shim": {
-    "angularfire": ["angular"]
-  },
-  "buildConfig": {
-    "uglify": "true"
-  }
-}
