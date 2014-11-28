@@ -1,5 +1,6 @@
 import 'ionic';
 import 'angularfire';
+import angular from "angular";
 import {dietRouteModule} from './routes/diet/diet.route';
 import {trainingRouteModule} from './routes/training/training.route';
 

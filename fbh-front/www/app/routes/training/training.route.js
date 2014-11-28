@@ -1,4 +1,5 @@
 import template from './training.template.html!text';
+import angular from "angular";
 
 export var trainingRouteModule = angular.module('trainingRouteModule', [
   'ui.router'
