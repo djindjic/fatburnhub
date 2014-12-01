@@ -1,7 +1,7 @@
 System.config({
   "paths": {
     "*": "*.js",
-    "github:*": "https://github.jspm.io/*.js"
+    "github:*": "jspm_packages/github/*.js"
   }
 });
 
