@@ -1,8 +1,10 @@
 import template from './diet.template.html!text';
 import angular from "angular";
+import {dietControllerModule} from './diet.controller';
 
-export var dietRouteModule = angular.module('dietRouteModule', [
-  'ui.router'
+export let dietRouteModule = angular.module('dietRouteModule', [
+  'ui.router',
+  dietControllerModule.name
 ]).config([
   '$stateProvider',
   function dietRoute($stateProvider) {
