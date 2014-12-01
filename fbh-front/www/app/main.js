@@ -17,11 +17,16 @@ export let mainModule = angular.module('fatburnhub', [
 mainModule.controller("loginCtrl", function($scope, $rootScope, $firebase) {
 
   var ref = new Firebase(FIREBASE_URL);
+
   ref.onAuth(function(authData) {
 	  if (authData) {
+	  	ref.child('users').child(authData.uid).set(authData);
 	    // user authenticated with Firebase
 	    console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
 	  } else {
+	  	//  window.cookies.clear(function() {
+		  //   console.log("Cookies cleared!");
+		  // });
 	    console.log("user is logged out");
 	  }
 	});
