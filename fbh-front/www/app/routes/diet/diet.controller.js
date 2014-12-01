@@ -4,7 +4,7 @@ import {FIREBASE_URL} from 'app/constants/firebase-url';
 export let dietControllerModule = angular.module('dietControllerModule', []);
 
 dietControllerModule.controller('MyControllerDiet', ['$scope', '$firebase', function ($scope, $firebase) {
-	console.log("diet");
+	console.log(window);
 	var ref = new Firebase(FIREBASE_URL + '/data1');
     var sync = $firebase(ref);
 	// download the data into a local object
