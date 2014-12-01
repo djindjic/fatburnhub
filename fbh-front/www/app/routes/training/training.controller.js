@@ -4,7 +4,7 @@ import {FIREBASE_URL} from 'app/constants/firebase-url';
 export let trainingControllerModule = angular.module('trainingControllerModule', []);
 
 trainingControllerModule.controller('MyController', ['$scope', '$firebase', function ($scope, $firebase) {
-	var ref = new Firebase(FIREBASE_URL + '/data');
+	var ref = new Firebase(`${FIREBASE_URL}/data`);
     var sync = $firebase(ref);
 	// download the data into a local object
 	var syncObject = sync.$asObject();
