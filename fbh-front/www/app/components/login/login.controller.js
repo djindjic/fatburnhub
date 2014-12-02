@@ -29,7 +29,7 @@ export let loginControllerModule = angular.module('loginControllerModule', [])
 		    console.log(authData.facebook.accessToken);
 		  }
     }, {
-	  remember: "sessionOnly",
+	  remember: "default",
 	  scope: "email"
 	});
   };
