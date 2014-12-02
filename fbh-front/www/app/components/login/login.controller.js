@@ -9,6 +9,7 @@ export let loginControllerModule = angular.module('loginControllerModule', [])
 	  	ref.child('users').child(authData.uid).set(authData);
 	    // user authenticated with Firebase
 	    console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+	    $scope.uid = authData.uid;
 	    $scope.authenticated = true;
 	  } else {
 	  	$scope.authenticated = false;
