@@ -9,7 +9,10 @@ export let loginControllerModule = angular.module('loginControllerModule', [])
 	  	ref.child('users').child(authData.uid).set(authData);
 	    // user authenticated with Firebase
 	    console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+	    $scope.authenticated = true;
+	    console.log($scope.unauthenticated);
 	  } else {
+	  	$scope.authenticated = false;
 	  	//  window.cookies.clear(function() {
 		  //   console.log("Cookies cleared!");
 		  // });
@@ -19,6 +22,7 @@ export let loginControllerModule = angular.module('loginControllerModule', [])
 
   // Logs a user in with inputted provider
   $scope.login = function(provider) {
+  	$scope.authenticated = true;
     ref.authWithOAuthPopup("facebook", function(error, authData) {
     	if (authData) {
 		    // the access token will allow us to make Open Graph API calls

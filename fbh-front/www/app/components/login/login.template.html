@@ -1,2 +1,2 @@
-<button class="button button-full button-positive" ng-click="login('facebook')">Login with Facebook</button>
-<button class="button button-full button-outline button-assertive" ng-click="logout()">Logout</button>
+<button ng-hide="authenticated" class="button button-full button-positive" ng-click="login('facebook')">Login with Facebook</button>
+<button ng-show="authenticated" class="button button-full button-outline button-assertive" ng-click="logout()">Logout</button>
