@@ -1,5 +1,5 @@
 import template from './diet.template.html!text';
-import angular from "angular";
+import angular from 'angular';
 import {dietControllerModule} from './diet.controller';
 
 export let dietRouteModule = angular.module('dietRouteModule', [

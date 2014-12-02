@@ -1,6 +1,6 @@
 import angular from 'angular';
 
-export let mainConfig = angular.module('main-config', []);
+export let mainConfigModule = angular.module('mainConfigModule', []);
 
 if(document.location.protocol !== "file:") {
   var script = document.createElement('base');
@@ -8,7 +8,7 @@ if(document.location.protocol !== "file:") {
 
   document.getElementsByTagName('head')[0].appendChild(script);
 
-  mainConfig.config(['$locationProvider',
+  mainConfigModule.config(['$locationProvider',
     function($locationProvider) {
       $locationProvider.html5Mode(true).hashPrefix('!');
     }
