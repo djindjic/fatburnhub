@@ -3,14 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <style>
+      [ng-cloak] {
+        display: none;
+      }
+    </style>
   </head>
-  <body>
+  <body ng-cloak>
     <ion-pane>
       <ion-header-bar class="bar-positive">
-        <h1 class="title">fatburnhub.com</h1>
+        <h1 class="title">fatburnhub.com {{$root.user.uid}}</h1>
       </ion-header-bar>
       <ion-content>
-        <login firebase-url="https://fatburnhub.firebaseio.com"></login>
+        <firebase:authentication firebase-url="https://fatburnhub.firebaseio.com" user="$root.user">
+          <button firebase-login class="button button-full button-positive">Login with Facebook</button>
+          <button firebase-logout class="button button-full button-outline button-assertive">Logout</button>
+          <img ng-src="http://graph.facebook.com/{{$root.user.uid.split(':')[1]}}/picture"/>
+        </firebase:authentication>
         <div ui-view></div>
       </ion-content>
       <ion-footer-bar>
