@@ -16,7 +16,7 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthentication', functi
     replace: true,
     transclude: true,
     scope: {
-      firebaseUrl: '@',
+      firebaseRef: '&',
       user: '='
     },
     controller: 'FirebaseAuthenticationController',
