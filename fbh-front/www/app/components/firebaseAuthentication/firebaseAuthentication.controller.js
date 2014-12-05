@@ -2,19 +2,16 @@ import angular from 'angular';
 
 export let firebaseAuthenticationControllerModule = angular.module('firebaseAuthenticationControllerModule', []);
 
-firebaseAuthenticationControllerModule.controller('FirebaseAuthenticationController', ['$scope', function($scope) {
-  var ref = $scope.firebaseRef();
+firebaseAuthenticationControllerModule.controller('FirebaseAuthenticationController', ['$rootScope', '$firebaseAuth', function($rootScope, $firebaseAuth) {
 
-  ref.onAuth(function(authData) {
+  let fbsAuth = this;
+
+  fbsAuth.auth().$onAuth(function(authData) {
+    $rootScope.user = authData;
     if (authData) {
-      ref.child('users').child(authData.uid).set(authData);
-      // user authenticated with Firebase
-      console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
-      $scope.uid = authData.uid;
-      $scope.authenticated = true;
-      $scope.user = authData;
+      //fbsAuth.auth().child('users').child(authData.uid).set(authData);
+      console.log("Logged in as:", authData.uid);
     } else {
-      $scope.authenticated = false;
       //  window.cookies.clear(function() {
       //   console.log("Cookies cleared!");
       // });
@@ -23,19 +20,15 @@ firebaseAuthenticationControllerModule.controller('FirebaseAuthenticationControl
   });
 
   // Logs a user in with inputted provider
-  this.login = function(provider) {
-    $scope.authenticated = true;
-    ref.authWithOAuthPopup("facebook", function(error, authData) {
-      if (authData) {
-        // the access token will allow us to make Open Graph API calls
-        console.log(authData.facebook.accessToken);
-      }
-    }, {
-      remember: "default",
-      scope: "email"
+  fbsAuth.login = function() {
+    fbsAuth.auth().$authWithOAuthPopup("facebook").then(function(authData) {
+      // console.log("Logged in as:", authData.uid);
+      // $rootScope.user = authData;
+    }).catch(function(error) {
+      console.error("Authentication failed: ", error);
     });
   };
-  this.logout = function(provider) {
-    ref.unauth();
+  fbsAuth.logout = function() {
+    fbsAuth.auth().$unauth();
   };
 }]);

@@ -5,7 +5,6 @@ export let firebaseLogoutDirectiveModule = angular.module('firebaseLogoutDirecti
   return {
     require: '^firebaseAuthentication',
     link: function(scope, element, attrs, firebaseAuthenticationCtrl) {
-      console.log(arguments);
       element.bind('click', function() {
       	firebaseAuthenticationCtrl.logout();
       });

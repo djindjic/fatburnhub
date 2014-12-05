@@ -15,10 +15,10 @@
         <h1 class="title">fatburnhub.com {{$root.user.uid}}</h1>
       </ion-header-bar>
       <ion-content>
-        <firebase:authentication firebase-ref="$root.firebaseRef" user="$root.user">
+        <firebase:authentication firebase-ref="$root.firebaseRef" auth="$root.auth">
           <button firebase-login class="button button-full button-positive">Login with Facebook</button>
           <button firebase-logout class="button button-full button-outline button-assertive">Logout</button>
-          <img ng-src="http://graph.facebook.com/{{$root.user.uid.split(':')[1]}}/picture"/>
+          <img ng-show="user" ng-src="http://graph.facebook.com/{{user.uid.split(':')[1]}}/picture"/>
         </firebase:authentication>
         <div ui-view></div>
       </ion-content>
@@ -35,7 +35,7 @@
     </ion-pane>
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
-    <script src="build-1.js"></script>
+    <script src="build-2.js"></script>
     <script>
       System.import('app/bootstrap');
     </script>

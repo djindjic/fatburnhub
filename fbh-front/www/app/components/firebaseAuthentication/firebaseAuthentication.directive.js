@@ -16,10 +16,12 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthentication', functi
     replace: true,
     transclude: true,
     scope: {
-      firebaseRef: '&',
+      auth: '&',
       user: '='
     },
     controller: 'FirebaseAuthenticationController',
+    controllerAs: 'fbsAuth',
+    bindToController: true,
     template: template
   }
 });
