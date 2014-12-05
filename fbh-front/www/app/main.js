@@ -13,7 +13,9 @@ export let mainModule = angular.module('fatburnhub', [
   firebaseAuthenticationDirectiveModule.name,
   dietRouteModule.name,
   trainingRouteModule.name
-]).run(['$rootScope', '$firebaseAuth', function($rootScope, $firebaseAuth) {
-      var ref = new Firebase("https://fatburnhub.firebaseio.com/");
-      $rootScope.auth = $firebaseAuth(ref);
+]);
+
+mainModule.factory("Auth", ["$firebaseAuth", function($firebaseAuth) {
+  var ref = new Firebase("https://fatburnhub.firebaseio.com/");
+  return $firebaseAuth(ref);
 }]);

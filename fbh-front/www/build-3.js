@@ -25040,45 +25040,6 @@ System.register("app/config/main.config", ["angular"], function($__export) {
 
 
 
-System.register("app/components/firebaseAuthentication/firebaseAuthentication.controller", ["angular"], function($__export) {
-  "use strict";
-  var __moduleName = "app/components/firebaseAuthentication/firebaseAuthentication.controller";
-  function require(path) {
-    return $traceurRuntime.require("app/components/firebaseAuthentication/firebaseAuthentication.controller", path);
-  }
-  var angular,
-      firebaseAuthenticationControllerModule;
-  return {
-    setters: [function(m) {
-      angular = m.default;
-    }],
-    execute: function() {
-      firebaseAuthenticationControllerModule = $__export("firebaseAuthenticationControllerModule", angular.module('firebaseAuthenticationControllerModule', []));
-      firebaseAuthenticationControllerModule.controller('FirebaseAuthenticationController', ['$rootScope', '$firebaseAuth', function($rootScope, $firebaseAuth) {
-        var fbsAuth = this;
-        fbsAuth.auth().$onAuth(function(authData) {
-          $rootScope.user = authData;
-          if (authData) {
-            console.log("Logged in as:", authData.uid);
-          } else {
-            console.log("user is logged out");
-          }
-        });
-        fbsAuth.login = function() {
-          fbsAuth.auth().$authWithOAuthPopup("facebook").then(function(authData) {}).catch(function(error) {
-            console.error("Authentication failed: ", error);
-          });
-        };
-        fbsAuth.logout = function() {
-          fbsAuth.auth().$unauth();
-        };
-      }]);
-    }
-  };
-});
-
-
-
 System.register("app/components/firebaseAuthentication/firebaseLogin/firebaseLogin.directive", ["angular"], function($__export) {
   "use strict";
   var __moduleName = "app/components/firebaseAuthentication/firebaseLogin/firebaseLogin.directive";
@@ -25197,7 +25158,7 @@ System.register("app/routes/training/training.route", ["./training.template.html
 
 
 
-System.register("app/components/firebaseAuthentication/firebaseAuthentication.directive", ["./firebaseAuthentication.template.html!text", "angular", "./firebaseAuthentication.controller", "./firebaseLogin/firebaseLogin.directive", "./firebaseLogout/firebaseLogout.directive"], function($__export) {
+System.register("app/components/firebaseAuthentication/firebaseAuthentication.directive", ["./firebaseAuthentication.template.html!text", "angular", "./firebaseLogin/firebaseLogin.directive", "./firebaseLogout/firebaseLogout.directive"], function($__export) {
   "use strict";
   var __moduleName = "app/components/firebaseAuthentication/firebaseAuthentication.directive";
   function require(path) {
@@ -25205,7 +25166,6 @@ System.register("app/components/firebaseAuthentication/firebaseAuthentication.di
   }
   var template,
       angular,
-      firebaseAuthenticationControllerModule,
       firebaseLoginDirectiveModule,
       firebaseLogoutDirectiveModule,
       firebaseAuthenticationDirectiveModule;
@@ -25215,29 +25175,39 @@ System.register("app/components/firebaseAuthentication/firebaseAuthentication.di
     }, function(m) {
       angular = m.default;
     }, function(m) {
-      firebaseAuthenticationControllerModule = m.firebaseAuthenticationControllerModule;
-    }, function(m) {
       firebaseLoginDirectiveModule = m.firebaseLoginDirectiveModule;
     }, function(m) {
       firebaseLogoutDirectiveModule = m.firebaseLogoutDirectiveModule;
     }],
     execute: function() {
-      firebaseAuthenticationDirectiveModule = $__export("firebaseAuthenticationDirectiveModule", angular.module('firebaseAuthenticationDirectiveModule', [firebaseAuthenticationControllerModule.name, firebaseLoginDirectiveModule.name, firebaseLogoutDirectiveModule.name]));
-      firebaseAuthenticationDirectiveModule.directive('firebaseAuthentication', function() {
+      firebaseAuthenticationDirectiveModule = $__export("firebaseAuthenticationDirectiveModule", angular.module('firebaseAuthenticationDirectiveModule', []));
+      firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective', ['Auth', function(Auth) {
         return {
-          restrict: 'AE',
+          restrict: 'E',
           replace: true,
           transclude: true,
-          scope: {
-            auth: '&',
-            user: '='
-          },
-          controller: 'FirebaseAuthenticationController',
-          controllerAs: 'fbsAuth',
-          bindToController: true,
-          template: template
+          scope: {},
+          link: function(scope, element, attrs, ctrl, transclude) {
+            Auth.$onAuth(function(authData) {
+              scope.user = authData;
+            });
+            scope.login = function() {
+              Auth.$authWithOAuthPopup("facebook").then(function(authData) {
+                console.log("Logged in as:", authData.uid);
+              }).catch(function(error) {
+                console.error("Authentication failed: ", error);
+              });
+            };
+            scope.logout = function() {
+              Auth.$unauth();
+              console.log("Logged out");
+            };
+            transclude(scope, function(clone, scope) {
+              element.append(clone);
+            });
+          }
         };
-      });
+      }]);
     }
   };
 });
@@ -25300,10 +25270,11 @@ System.register("app/main", ["ionic", "angularfire", "angular", "./routes/diet/d
       firebaseAuthenticationDirectiveModule = m.firebaseAuthenticationDirectiveModule;
     }],
     execute: function() {
-      mainModule = $__export("mainModule", angular.module('fatburnhub', ['ionic', 'firebase', mainConfigModule.name, firebaseAuthenticationDirectiveModule.name, dietRouteModule.name, trainingRouteModule.name]).run(['$rootScope', '$firebaseAuth', function($rootScope, $firebaseAuth) {
+      mainModule = $__export("mainModule", angular.module('fatburnhub', ['ionic', 'firebase', mainConfigModule.name, firebaseAuthenticationDirectiveModule.name, dietRouteModule.name, trainingRouteModule.name]));
+      mainModule.factory("Auth", ["$firebaseAuth", function($firebaseAuth) {
         var ref = new Firebase("https://fatburnhub.firebaseio.com/");
-        $rootScope.auth = $firebaseAuth(ref);
-      }]));
+        return $firebaseAuth(ref);
+      }]);
     }
   };
 });
@@ -26953,4 +26924,4 @@ module.exports = require("github:driftyco/ionic-bower@1.0.0-beta.13/js/ionic-ang
   return module.exports;
 });
 
-//# sourceMappingURL=build-2.js.map
+//# sourceMappingURL=build-3.js.map
