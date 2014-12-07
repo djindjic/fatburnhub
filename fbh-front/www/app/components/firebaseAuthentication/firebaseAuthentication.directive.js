@@ -10,7 +10,7 @@ export let firebaseAuthenticationDirectiveModule = angular.module('firebaseAuthe
   // firebaseLogoutDirectiveModule.name
 ]);
 
-firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective', ['Auth', function(Auth) {
+firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective', ['fbsAuth', function(fbsAuth) {
   return {
     restrict: 'E',
     replace: true,
@@ -20,12 +20,12 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective
     // controller: 'AuthenticationController',
     // controllerAs: 'fbsAuthCtrl',
     link: function(scope, element, attrs, ctrl, transclude) {
-      Auth.$onAuth(function(authData) {
+      fbsAuth.$onAuth(function(authData) {
         scope.user = authData;
       });
 
       scope.login = function() {
-        Auth.$authWithOAuthPopup("facebook").then(function(authData) {
+        fbsAuth.$authWithOAuthPopup("facebook").then(function(authData) {
           console.log("Logged in as:", authData.uid);
         }).catch(function(error) {
           console.error("Authentication failed: ", error);
@@ -33,7 +33,7 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective
       };
 
       scope.logout = function() {
-        Auth.$unauth();
+        fbsAuth.$unauth();
         console.log("Logged out");
       }
 
@@ -45,3 +45,16 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective
     // templateUrl: 'fbsAuth.template.html'
   }
 }]);
+
+firebaseAuthenticationDirectiveModule.provider('fbsAuth', function() {
+  this.appName = null;
+
+  this.setAppName = function(name) {
+    this.appName = name;
+  };
+
+  this.$get = ["$firebaseAuth", function ($firebaseAuth) {
+    var ref = new Firebase("https://" + this.appName + ".firebaseio.com/");
+    return $firebaseAuth(ref);
+  }];
+});

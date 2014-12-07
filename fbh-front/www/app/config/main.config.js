@@ -1,7 +1,6 @@
-import angular from 'angular';
-
 export let mainConfigModule = angular.module('mainConfigModule', []);
 
+//webapp location config
 if(document.location.protocol !== "file:") {
   var script = document.createElement('base');
   script.href = '/';    
