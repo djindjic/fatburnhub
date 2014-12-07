@@ -4,13 +4,13 @@ import angular from 'angular';
 import {firebaseLoginDirectiveModule} from './firebaseLogin/firebaseLogin.directive';
 import {firebaseLogoutDirectiveModule} from './firebaseLogout/firebaseLogout.directive';
 
-export let firebaseAuthenticationDirectiveModule = angular.module('firebaseAuthenticationDirectiveModule', [
+export let firebaseAuthenticationModule = angular.module('firebaseAuthenticationModule', [
   // firebaseAuthenticationControllerModule.name,
   // firebaseLoginDirectiveModule.name,
   // firebaseLogoutDirectiveModule.name
 ]);
 
-firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective', ['fbsAuth', function(fbsAuth) {
+firebaseAuthenticationModule.directive('firebaseAuthenticationDirective', ['fbsAuth', function(fbsAuth) {
   return {
     restrict: 'E',
     replace: true,
@@ -46,7 +46,7 @@ firebaseAuthenticationDirectiveModule.directive('firebaseAuthenticationDirective
   }
 }]);
 
-firebaseAuthenticationDirectiveModule.provider('fbsAuth', function() {
+firebaseAuthenticationModule.provider('fbsAuth', function() {
   this.appName = null;
 
   this.setAppName = function(name) {

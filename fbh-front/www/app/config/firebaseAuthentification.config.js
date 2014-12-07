@@ -1,11 +1,9 @@
-import {firebaseAuthenticationDirectiveModule} from 'app/components/firebaseAuthentication/firebaseAuthentication.directive';
-
+import {firebaseAuthenticationModule} from 'app/components/firebaseAuthentication/firebaseAuthentication.module';
 
 export let firebaseAuthentificationConfigModule = angular.module('firebaseAuthentificationConfigModule', [
-  firebaseAuthenticationDirectiveModule.name
+  firebaseAuthenticationModule.name
 ]);
 //firebase module config
 firebaseAuthentificationConfigModule.config(['fbsAuthProvider', function(fbsAuthProvider) {
-  console.log('setname');
   fbsAuthProvider.setAppName('fatburnhub');
 }]);
