@@ -1,3 +1,5 @@
+import angular from 'angular';
+
 export let mainConfigModule = angular.module('mainConfigModule', []);
 
 //webapp location config
