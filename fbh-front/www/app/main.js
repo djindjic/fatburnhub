@@ -2,22 +2,23 @@
 import angular from 'angular';
 import 'ionic';
 import 'angularfire';
+import fbhFirebaseUtil from 'fbh-firebase-util';
+console.log(fbhFirebaseUtil.name);
 
 //configs
 import {mainConfigModule} from './config/main.config';
-import {firebaseAuthentificationConfigModule} from './config/firebaseAuthentification.config'
+import {fbhFirebaseUtilConfigModule} from './config/fbhFirebaseUtil.config'
 
-//routes
+// //routes
 import {dietRouteModule} from './routes/diet/diet.route';
 import {trainingRouteModule} from './routes/training/training.route';
-import {firebaseAuthenticationModule} from './components/firebaseAuthentication/firebaseAuthentication.module';
 
 export let mainModule = angular.module('fatburnhub', [
   'ionic',
   'firebase',
+  fbhFirebaseUtil.name,
   mainConfigModule.name,
-  firebaseAuthentificationConfigModule.name,
-  firebaseAuthenticationModule.name,
+  fbhFirebaseUtilConfigModule.name,
   dietRouteModule.name,
   trainingRouteModule.name
 ]);
