@@ -18,13 +18,27 @@ System.config({
     ],
     "github:angular-ui/ui-router@0.2.10/release/angular-ui-router": [],
     "github:firebase/firebase-bower@2.0.6/firebase": [],
-    "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseAuthentication/fbhFirebaseAuthentication.template.html!github:systemjs/plugin-text@0.0.2": [],
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.controller": [
+      "github:angular/bower-angular@1.3.6"
+    ],
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.provider": [
+      "github:angular/bower-angular@1.3.6"
+    ],
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.directive": [
+      "github:angular/bower-angular@1.3.6"
+    ],
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseLogin/fbhFirebaseLogin.directive": [
+      "github:angular/bower-angular@1.3.6"
+    ],
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseLogout/fbhFirebaseLogout.directive": [
+      "github:angular/bower-angular@1.3.6"
+    ],
     "app/config/main.config": [
       "github:angular/bower-angular@1.3.6"
     ],
     "app/config/fbhFirebaseUtil.config": [
       "github:angular/bower-angular@1.3.6",
-      "github:djindjic/fbh-firebase-util@0.0.14"
+      "github:djindjic/fbh-firebase-util@0.0.17"
     ],
     "app/routes/diet/diet.template.html!github:systemjs/plugin-text@0.0.2": [],
     "app/constants/firebase-url.constant": [],
@@ -51,10 +65,14 @@ System.config({
     "github:firebase/firebase-bower@2.0.6": [
       "github:firebase/firebase-bower@2.0.6/firebase"
     ],
-    "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseAuthentication/fbhFirebaseAuthentication.module": [
-      "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseAuthentication/fbhFirebaseAuthentication.template.html!github:systemjs/plugin-text@0.0.2",
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.module": [
       "github:angular/bower-angular@1.3.6",
-      "github:firebase/angularfire@0.9.0"
+      "github:firebase/angularfire@0.9.0",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.controller",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.provider",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.directive",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseLogin/fbhFirebaseLogin.directive",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseLogout/fbhFirebaseLogout.directive"
     ],
     "app/routes/diet/diet.controller": [
       "github:angular/bower-angular@1.3.6",
@@ -72,9 +90,9 @@ System.config({
       "github:firebase/firebase-bower@2.0.6",
       "github:angular/bower-angular@1.3.6"
     ],
-    "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseUtil": [
-      "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseAuthentication/fbhFirebaseAuthentication.module",
-      "github:angular/bower-angular@1.3.6"
+    "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseUtil": [
+      "github:angular/bower-angular@1.3.6",
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseAuthentication/fbhFirebaseAuthentication.module"
     ],
     "app/routes/diet/diet.route": [
       "app/routes/diet/diet.template.html!github:systemjs/plugin-text@0.0.2",
@@ -92,8 +110,8 @@ System.config({
     "github:firebase/angularfire@0.9.0": [
       "github:firebase/angularfire@0.9.0/angularfire"
     ],
-    "github:djindjic/fbh-firebase-util@0.0.14": [
-      "github:djindjic/fbh-firebase-util@0.0.14/fbhFirebaseUtil"
+    "github:djindjic/fbh-firebase-util@0.0.17": [
+      "github:djindjic/fbh-firebase-util@0.0.17/lib/fbhFirebaseUtil"
     ],
     "github:driftyco/ionic-bower@1.0.0-beta.13": [
       "github:driftyco/ionic-bower@1.0.0-beta.13/js/ionic-angular"
@@ -102,7 +120,7 @@ System.config({
       "github:angular/bower-angular@1.3.6",
       "github:driftyco/ionic-bower@1.0.0-beta.13",
       "github:firebase/angularfire@0.9.0",
-      "github:djindjic/fbh-firebase-util@0.0.14",
+      "github:djindjic/fbh-firebase-util@0.0.17",
       "app/config/main.config",
       "app/config/fbhFirebaseUtil.config",
       "app/routes/diet/diet.route",
@@ -119,7 +137,7 @@ System.config({
     "angular": "github:angular/bower-angular@1.3.6",
     "angularfire": "github:firebase/angularfire@0.9.0",
     "css": "github:systemjs/plugin-css@0.1.0",
-    "fbh-firebase-util": "github:djindjic/fbh-firebase-util@0.0.14",
+    "fbh-firebase-util": "github:djindjic/fbh-firebase-util@0.0.17",
     "ionic": "github:driftyco/ionic-bower@1.0.0-beta.13",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular/bower-angular-animate@1.3.6": {
@@ -128,10 +146,9 @@ System.config({
     "github:angular/bower-angular-sanitize@1.3.6": {
       "angular": "github:angular/bower-angular@1.3.6"
     },
-    "github:djindjic/fbh-firebase-util@0.0.14": {
+    "github:djindjic/fbh-firebase-util@0.0.17": {
       "angular": "github:angular/bower-angular@1.3.6",
-      "angularfire": "github:firebase/angularfire@0.9.0",
-      "text": "github:systemjs/plugin-text@0.0.2"
+      "angularfire": "github:firebase/angularfire@0.9.0"
     },
     "github:driftyco/ionic-bower@1.0.0-beta.13": {
       "angular": "github:angular/bower-angular@1.3.6",

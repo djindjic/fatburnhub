@@ -3,7 +3,6 @@ import angular from 'angular';
 import 'ionic';
 import 'angularfire';
 import fbhFirebaseUtil from 'fbh-firebase-util';
-console.log(fbhFirebaseUtil.name);
 
 //configs
 import {mainConfigModule} from './config/main.config';
