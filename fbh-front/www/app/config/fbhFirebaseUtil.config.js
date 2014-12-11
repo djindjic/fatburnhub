@@ -5,6 +5,6 @@ export let fbhFirebaseUtilConfigModule = angular.module('fbhFirebaseUtilConfigMo
   fbhFirebaseUtil.name
 ]);
 
-fbhFirebaseUtilConfigModule.config(['fbhFirebaseRefProvider', function(fbhFirebaseRefProvider) {
-  fbhFirebaseRefProvider.setAppName('fatburnhub');
+fbhFirebaseUtilConfigModule.config(['fbhFirebaseRefProvider', 'FIREBASE_APP_NAME', function(fbhFirebaseRefProvider, FIREBASE_APP_NAME) {
+  fbhFirebaseRefProvider.setAppName(FIREBASE_APP_NAME);
 }]);
