@@ -10,30 +10,29 @@
     </style>
   </head>
   <body data-main-app ng-cloak>
-    <ion-pane>
-      <ion-header-bar class="bar-positive">
-        <h1 class="title">fatburnhub.com</h1>
-      </ion-header-bar>
-      <ion-content>
+    <div layout="column" layout-align="center center">
+      <div>
         <fbh-firebase-authentication-directive>
-          <button fbh-firebase-login class="button button-full button-positive">Login</button>
-          <button fbh-firebase-logout class="button button-full button-outline button-assertive">Logout</button>
-          <input type="text" ng-model="fbsAuthCtrl.user.uid" />
-          <img ng-show="fbsAuthCtrl.user" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
+          <md-button fbh-firebase-login ng-show="!fbsAuthCtrl.user" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
+            <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
+          </md-button>
+          <md-button fbh-firebase-logout ng-show="fbsAuthCtrl.user" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
+            <img ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
+          </md-button>
         </fbh-firebase-authentication-directive>
+      </div>
+      <div>
         <div ui-view></div>
-      </ion-content>
-      <ion-footer-bar>
-        <div class="tabs tabs-icon-only">
-          <a class="tab-item" ui-sref="diet">
-            <i class="icon ion-star"></i>
-          </a>
-          <a class="tab-item" ui-sref="training">
-            <i class="icon ion-gear-a"></i>
-          </a>
-        </div>
-      </ion-footer-bar>
-    </ion-pane>
+      </div>
+    </div>
+    <div class="tabs tabs-icon-only">
+      <a class="tab-item" ui-sref="diet">
+        <i class="icon ion-star"></i>
+      </a>
+      <a class="tab-item" ui-sref="training">
+        <i class="icon ion-gear-a"></i>
+      </a>
+    </div>
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>
