@@ -1,1 +1,0 @@
-export const FIREBASE_URL = "https://fatburnhub.firebaseio.com";

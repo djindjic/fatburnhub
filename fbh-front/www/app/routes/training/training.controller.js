@@ -1,5 +1,4 @@
 import angular from 'angular';
-import {FIREBASE_URL} from 'app/constants/firebase-url.constant';
 
 export let trainingControllerModule = angular.module('trainingControllerModule', []);
 
