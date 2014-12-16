@@ -10,16 +10,24 @@
     </style>
   </head>
   <body data-main-app ng-cloak>
-    <div layout="column" layout-align="center center">
+    <div layout="row" layout-align="end start">
       <div>
         <fbh-firebase-authentication-directive>
-          <md-button fbh-firebase-login ng-show="!fbsAuthCtrl.user" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
+<!--           <md-button fbh-firebase-login ng-if="!fbsAuthCtrl.authentificated" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
             <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
           </md-button>
-          <md-button fbh-firebase-logout ng-show="fbsAuthCtrl.user" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
-            <img ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
-          </md-button>
+          <md-button fbh-firebase-logout ng-if="fbsAuthCtrl.authentificated" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
+            <img ng-if="fbsAuthCtrl.authentificated" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
+          </md-button> -->
+          <button fbh-firebase-login ng-if="!fbsAuthCtrl.authentificated">login</button>
+          <button fbh-firebase-logout ng-if="fbsAuthCtrl.authentificated">logout</button>
+          <img ng-if="fbsAuthCtrl.authentificated" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
         </fbh-firebase-authentication-directive>
+      </div>
+    </div>
+    <div layout="column" layout-align="center center">
+      <div layout="row" layout-align="end start">
+        
       </div>
       <div>
         <div ui-view></div>
@@ -33,6 +41,7 @@
         <i class="icon ion-gear-a"></i>
       </a>
     </div>
+    <script src="jspm_packages/traceur-runtime.js"></script>
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>

@@ -1,12 +1,11 @@
 import angular from 'angular';
+import {Person} from 'metabolicjs';
 
 export let dietControllerModule = angular.module('dietControllerModule', []);
 
-dietControllerModule.controller('MyControllerDiet', ['$scope', '$firebase', 'fbhFirebaseRef', function ($scope, $firebase, fbhFirebaseRef) {
-	let sync  = $firebase(fbhFirebaseRef.child("data"));
-	// download the data into a local object
-	let syncObject = sync.$asObject();
-	// synchronize the object with a three-way data binding
-	// click on `index.html` above to see it used in the DOM!
+dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef', function ($scope, fbhFirebaseRef) {
+	let syncObject = fbhFirebaseRef.syncObject('data');
 	syncObject.$bindTo($scope, 'data');
+
+	console.log(new Person({yearOfBirth:1980}).yearOfBirth);
 }]);

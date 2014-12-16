@@ -1,0 +1,11 @@
+{
+  "registry": "jspm",
+  "main": "lib/metabolic",
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-shell": "^0.2.11",
+    "gulp-watch": "^3.0.0",
+    "jspm": "^0.9.0"
+  },
+  "dependencies": {}
+}
