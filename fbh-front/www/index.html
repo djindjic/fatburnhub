@@ -9,34 +9,33 @@
       }
     </style>
   </head>
-  <body data-main-app ng-cloak>
-    <div layout="row" layout-align="end start">
-      <div>
-        <fbh-firebase-authentication-directive>
-<!--           <md-button fbh-firebase-login ng-if="!fbsAuthCtrl.authentificated" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
+  <body data-main-app ng-cloak layout="column" layout-fill>
+    <div layout="row" layout-align="end start" flex>
+      <fbh-firebase-authentication-directive>
+        <div ng-show="!fbsAuthCtrl.authentificated">
+          <md-button fbh-firebase-login class="md-fab" md-theme="cyan" aria-label="Profile">
             <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
           </md-button>
-          <md-button fbh-firebase-logout ng-if="fbsAuthCtrl.authentificated" class="md-fab md-primary" md-theme="cyan" aria-label="Profile">
-            <img ng-if="fbsAuthCtrl.authentificated" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
-          </md-button> -->
-          <button fbh-firebase-login ng-if="!fbsAuthCtrl.authentificated">login</button>
-          <button fbh-firebase-logout ng-if="fbsAuthCtrl.authentificated">logout</button>
-          <img ng-if="fbsAuthCtrl.authentificated" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
-        </fbh-firebase-authentication-directive>
-      </div>
+        </div>
+        <div ng-show="fbsAuthCtrl.authentificated">
+          <md-button fbh-firebase-logout class="md-fab" md-theme="cyan" aria-label="Profile">
+            <img ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
+          </md-button>
+        </div>
+      </fbh-firebase-authentication-directive>
     </div>
-    <div layout="column" layout-align="center center">
-      <div>
-        <div ui-view></div>
-      </div>
+    <div layout="row" layout-align="center center" flex>
+      <div ui-view></div>
     </div>
-    <div class="tabs tabs-icon-only">
-      <a class="tab-item" ui-sref="diet">
-        <i class="icon ion-star"></i>
-      </a>
-      <a class="tab-item" ui-sref="training">
-        <i class="icon ion-gear-a"></i>
-      </a>
+    <div layout="row" layout-align="end end" class="tabsdemoStaticTabs" flex>
+      <md-tabs md-selected="selectedIndex">
+        <md-tab label="diet" id="tab1" aria-controls="tab1-content" ui-sref="diet">
+          <div ui-view="diet"></div>
+        </md-tab>
+        <md-tab label="training" id="tab2" aria-controls="tab2-content" ui-sref="training">
+          <div ui-view="training"></div>
+        </md-tab>
+      </md-tabs>
     </div>
     <script src="jspm_packages/traceur-runtime.js"></script>
     <script src="jspm_packages/system.js"></script>

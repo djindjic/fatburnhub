@@ -10,6 +10,9 @@ export let dietRouteModule = angular.module('dietRouteModule', [
   function dietRoute($stateProvider) {
     $stateProvider.state('diet', {
       url: '/diet',
+      data: {
+        'selectedTab': 0
+      },
       template: template,
     });
   }

@@ -1,7 +1,7 @@
 //vendor
 import angular from 'angular';
-import 'ionic';
 import 'angular-material';
+import 'angular-ui-router';
 import fbhFirebaseUtil from 'fbh-firebase-util';
 
 //constants
@@ -16,7 +16,6 @@ import {dietRouteModule} from './routes/diet/diet.route';
 import {trainingRouteModule} from './routes/training/training.route';
 
 export let mainModule = angular.module('fatburnhub', [
-  'ionic',
   'ngMaterial',
   fbhFirebaseUtil.name,
   mainConstantModule.name,

@@ -10,6 +10,9 @@ export var trainingRouteModule = angular.module('trainingRouteModule', [
   function trainingRoute($stateProvider) {
     $stateProvider.state('training', {
       url: '/training',
+      data: {
+        'selectedTab': 1
+      },
       template: template,
     });
   }
