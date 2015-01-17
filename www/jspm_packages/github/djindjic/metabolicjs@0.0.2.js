@@ -1,1 +1,0 @@
-export * from "github:djindjic/metabolicjs@0.0.2/lib/metabolic";

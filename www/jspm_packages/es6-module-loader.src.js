@@ -32,7 +32,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./Scheduler":3,"./env":5,"./makePromise":6}],3:[function(require,module,exports){
+},{"./Scheduler":3,"./env":5,"./makePromise":7}],3:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -123,6 +123,7 @@ define(function() {
 define(function(require) {
 
 	var setTimer = require('../env').setTimer;
+	var format = require('../format');
 
 	return function unhandledRejection(Promise) {
 		var logError = noop;
@@ -162,7 +163,7 @@ define(function(require) {
 		function report(r) {
 			if(!r.handled) {
 				reported.push(r);
-				logError('Potentially unhandled rejection [' + r.id + '] ' + formatError(r.value));
+				logError('Potentially unhandled rejection [' + r.id + '] ' + format.formatError(r.value));
 			}
 		}
 
@@ -170,7 +171,7 @@ define(function(require) {
 			var i = reported.indexOf(r);
 			if(i >= 0) {
 				reported.splice(i, 1);
-				logInfo('Handled previous rejection [' + r.id + '] ' + formatObject(r.value));
+				logInfo('Handled previous rejection [' + r.id + '] ' + format.formatObject(r.value));
 			}
 		}
 
@@ -191,28 +192,6 @@ define(function(require) {
 		return Promise;
 	};
 
-	function formatError(e) {
-		var s = typeof e === 'object' && e.stack ? e.stack : formatObject(e);
-		return e instanceof Error ? s : s + ' (WARNING: non-Error used)';
-	}
-
-	function formatObject(o) {
-		var s = String(o);
-		if(s === '[object Object]' && typeof JSON !== 'undefined') {
-			s = tryStringify(o, s);
-		}
-		return s;
-	}
-
-	function tryStringify(e, defaultValue) {
-		try {
-			return JSON.stringify(e);
-		} catch(e) {
-			// Ignore. Cannot JSON.stringify e, stick with String(e)
-			return defaultValue;
-		}
-	}
-
 	function throwit(e) {
 		throw e;
 	}
@@ -222,7 +201,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../env":5}],5:[function(require,module,exports){
+},{"../env":5,"../format":6}],5:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -298,6 +277,64 @@ define(function(require) {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
 },{}],6:[function(require,module,exports){
+/** @license MIT License (c) copyright 2010-2014 original author or authors */
+/** @author Brian Cavalier */
+/** @author John Hann */
+
+(function(define) { 'use strict';
+define(function() {
+
+	return {
+		formatError: formatError,
+		formatObject: formatObject,
+		tryStringify: tryStringify
+	};
+
+	/**
+	 * Format an error into a string.  If e is an Error and has a stack property,
+	 * it's returned.  Otherwise, e is formatted using formatObject, with a
+	 * warning added about e not being a proper Error.
+	 * @param {*} e
+	 * @returns {String} formatted string, suitable for output to developers
+	 */
+	function formatError(e) {
+		var s = typeof e === 'object' && e !== null && e.stack ? e.stack : formatObject(e);
+		return e instanceof Error ? s : s + ' (WARNING: non-Error used)';
+	}
+
+	/**
+	 * Format an object, detecting "plain" objects and running them through
+	 * JSON.stringify if possible.
+	 * @param {Object} o
+	 * @returns {string}
+	 */
+	function formatObject(o) {
+		var s = String(o);
+		if(s === '[object Object]' && typeof JSON !== 'undefined') {
+			s = tryStringify(o, s);
+		}
+		return s;
+	}
+
+	/**
+	 * Try to return the result of JSON.stringify(x).  If that fails, return
+	 * defaultValue
+	 * @param {*} x
+	 * @param {*} defaultValue
+	 * @returns {String|*} JSON.stringify(x) or defaultValue
+	 */
+	function tryStringify(x, defaultValue) {
+		try {
+			return JSON.stringify(x);
+		} catch(e) {
+			return defaultValue;
+		}
+	}
+
+});
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
+},{}],7:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -1225,9 +1262,10 @@ $__Object$create = Object.create || function(o, props) {
 /*
 *********************************************************************************************
 
-  Loader Polyfill
+  Dynamic Module Loader Polyfill
 
-    - Implemented exactly to the 2014-07-18 Specification Draft.
+    - Implemented exactly to the former 2014-08-24 ES6 Specification Draft Rev 27, Section 15
+      http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts#august_24_2014_draft_rev_27
 
     - Functions are commented with their spec numbers, with spec differences commented.
 
@@ -1237,8 +1275,6 @@ $__Object$create = Object.create || function(o, props) {
       commented.
 
     - Realm implementation is entirely omitted.
-
-    - Loader module table iteration currently not yet implemented.
 
 *********************************************************************************************
 */
@@ -1329,7 +1365,8 @@ function logloads(loads) {
 
 (function() {
   var Promise = __global.Promise || require('when/es6-shim/Promise');
-  console.assert = console.assert || function() {};
+  if (__global.console)
+    console.assert = console.assert || function() {};
 
   // IE8 support
   var indexOf = Array.prototype.indexOf || function(item) {
@@ -1397,7 +1434,7 @@ function logloads(loads) {
         load = createLoad(name);
         load.status = 'linked';
         // https://bugs.ecmascript.org/show_bug.cgi?id=2795
-        // load.module = loader.modules[name];
+        load.module = loader.modules[name];
         return load;
       }
 
@@ -1473,7 +1510,7 @@ function logloads(loads) {
       if (instantiateResult === undefined) {
         load.address = load.address || '<Anonymous Module ' + ++anonCnt + '>';
 
-        // NB instead of load.kind, use load.isDeclarative
+        // instead of load.kind, use load.isDeclarative
         load.isDeclarative = true;
         // parse sets load.declare, load.depsList
         loader.loaderObj.parse(load);
@@ -1565,12 +1602,16 @@ function logloads(loads) {
       if (loader.modules[name])
         throw new TypeError('"' + name + '" already exists in the module table');
 
-      // NB this still seems wrong for LoadModule as we may load a dependency
-      // of another module directly before it has finished loading.
-      // see https://bugs.ecmascript.org/show_bug.cgi?id=2994
-      for (var i = 0, l = loader.loads.length; i < l; i++)
-        if (loader.loads[i].name == name)
-          throw new TypeError('"' + name + '" already loading');
+      // adjusted to pick up existing loads
+      var existingLoad;
+      for (var i = 0, l = loader.loads.length; i < l; i++) {
+        if (loader.loads[i].name == name) {
+          existingLoad = loader.loads[i];
+          return existingLoad.linkSets[0].done.then(function() {
+            resolve(existingLoad);
+          });
+        }
+      }
 
       var load = createLoad(name);
 
@@ -1788,7 +1829,7 @@ function logloads(loads) {
   // 1. groups is an already-interleaved array of group kinds
   // 2. load.groupIndex is set when this function runs
   // 3. load.groupIndex is the interleaved index ie 0 declarative, 1 dynamic, 2 declarative, ... (or starting with dynamic)
-  function buildLinkageGroups(load, loads, groups, loader) {
+  function buildLinkageGroups(load, loads, groups) {
     groups[load.groupIndex] = groups[load.groupIndex] || [];
 
     // if the load already has a group index and its in its group, its already been done
@@ -1816,7 +1857,7 @@ function logloads(loads) {
           if (loadDep.groupIndex === undefined || loadDep.groupIndex < loadDepGroupIndex) {
 
             // if already in a group, remove from the old group
-            if (loadDep.groupIndex) {
+            if (loadDep.groupIndex !== undefined) {
               groups[loadDep.groupIndex].splice(indexOf.call(groups[loadDep.groupIndex], loadDep), 1);
 
               // if the old group is empty, then we have a mixed depndency cycle
@@ -1827,7 +1868,7 @@ function logloads(loads) {
             loadDep.groupIndex = loadDepGroupIndex;
           }
 
-          buildLinkageGroups(loadDep, loads, groups, loader);
+          buildLinkageGroups(loadDep, loads, groups);
         }
       }
     }
@@ -1866,7 +1907,7 @@ function logloads(loads) {
     var groups = [];
     var startingLoad = linkSet.loads[0];
     startingLoad.groupIndex = 0;
-    buildLinkageGroups(startingLoad, linkSet.loads, groups, loader);
+    buildLinkageGroups(startingLoad, linkSet.loads, groups);
 
     // determine the kind of the bottom group
     var curGroupDeclarative = startingLoad.isDeclarative == groups.length % 2;
@@ -2119,6 +2160,7 @@ function logloads(loads) {
     });
 
     // 26.3.3.13 realm not implemented
+    this.traceurOptions = {};
   }
 
   function Module() {}
@@ -2308,14 +2350,12 @@ function logloads(loads) {
 
       console.assert(load.source, 'Non-empty source');
 
-      var depsList;
-
       load.isDeclarative = true;
 
       var options = this.traceurOptions || {};
       options.modules = 'instantiate';
       options.script = false;
-      options.sourceMaps = true;
+      options.sourceMaps = 'inline';
       options.filename = load.address;
 
       var compiler = new traceur.Compiler(options);
@@ -2327,8 +2367,11 @@ function logloads(loads) {
 
       var sourceMap = compiler.getSourceMap();
 
-      if (__global.btoa && sourceMap)
-        source += '\n//# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(sourceMap))) + '\n';
+      if (__global.btoa && sourceMap) {
+        // add "!eval" to end of Traceur sourceURL
+        // I believe this does something?
+        source += '!eval';
+      }
 
       source = 'var __moduleAddress = "' + load.address + '";' + source;
 
@@ -2416,6 +2459,7 @@ function logloads(loads) {
     fetchTextFromURL = function(url, fulfill, reject) {
       var xhr = new XMLHttpRequest();
       var sameDomain = true;
+      var doTimeout = false;
       if (!('withCredentials' in xhr)) {
         // check if same domain
         var domainCheck = /^(\w+:)?\/\/([^\/]+)/.exec(url);
@@ -2430,10 +2474,9 @@ function logloads(loads) {
         xhr.onload = load;
         xhr.onerror = error;
         xhr.ontimeout = error;
-        // IE8/IE9 bug may hang requests unless all properties are defined. 
-        // See: http://stackoverflow.com/a/9928073/3949247
         xhr.onprogress = function() {};
         xhr.timeout = 0;
+        doTimeout = true;
       }
       function load() {
         fulfill(xhr.responseText);
@@ -2452,6 +2495,12 @@ function logloads(loads) {
         }
       };
       xhr.open("GET", url, true);
+
+      if (doTimeout)
+        setTimeout(function() {
+          xhr.send();
+        }, 0);
+
       xhr.send(null);
     }
   }
@@ -2666,7 +2715,10 @@ function logloads(loads) {
         var script = scripts[i];
         if (script.type == 'module') {
           var source = script.innerHTML.substr(1);
-          System.module(source)['catch'](function(err) { setTimeout(function() { throw err; }); });
+          // It is important to reference the global System, rather than the one
+          // in our closure. We want to ensure that downstream users/libraries
+          // can override System w/ custom behavior.
+          __global.System.module(source)['catch'](function(err) { setTimeout(function() { throw err; }); });
         }
       }
     }
