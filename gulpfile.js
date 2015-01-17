@@ -1,7 +1,11 @@
-var Promise        = require('promise'),
-    gulp           = require('gulp'),
-    del            = require('del'),
-    $              = require('gulp-load-plugins')();
+var Promise = require('promise'),
+    gulp    = require('gulp'),
+    $       = require('gulp-load-plugins')();
+    semver  = require('semver'),
+    shell   = require('gulp-shell'),
+    watch   = require('gulp-watch'),
+    bump    = require('gulp-bump'),
+    pkg     = require('./package.json');
 
 var startServer = function(){
   return new Promise(function (fulfil) {
@@ -15,65 +19,23 @@ var startServer = function(){
   });
 };
 
-var styles = function() {
-  return new Promise(function (fulfil) {
-    $.util.log('Rebuilding app styles');
-    gulp.src(['app/bundle_assets/styles/**/*.css'])
-      .pipe($.concat('style.css'))
-      .pipe($.minifyCss({
-        keepSpecialComments: 0
-      }))
-      .pipe(gulp.dest('./www/styles'))
-      .on('end', fulfil);
-    });
-};
-
-var fonts = function() {
-  return new Promise(function (fulfil) {
-    $.util.log('Rebuilding app fonts');
-    gulp.src(['app/bundle_assets/fonts/**/*'])
-      .pipe($.flatten())
-      .pipe(gulp.dest('./www/fonts'))
-      .on('end', fulfil);
-    });
-};
-
-var indexHtml = function () {
-  return new Promise(function (fulfil) {
-    $.util.log('Rebuilding index.html');
-    gulp.src('./app/index.html')
-      .pipe($.htmlmin({
-        collapseWhitespace: true,
-        conservativeCollapse: true,
-        minifyJS: true,
-        minifyCSS: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeComments: true
-      }))
-      .pipe(gulp.dest('./www'))
-      .pipe($.shell(['cd app && jspm bundle-sfx src/main ../www/script.js']))
-      .on('end', fulfil);
-    });
-};
-
-var clean = function (paths) {
-  return new Promise(function (fulfil) {
-    $.util.log('Clear:');
-    paths.forEach(function(path) {
-      $.util.log('-' + path);
-    });
-    del(paths, fulfil);
-  });
-};
-
 gulp.task('default',
   function() {
-    // clean(['www'])
-    // .then(styles)
-    // .then(fonts)
-    // .then(indexHtml)
-    // .then(startServer);
     startServer();
   }
 );
+
+gulp.task('deploy-master', function(){
+  var newVer = semver.inc(pkg.version, 'patch');
+  return gulp.src(['./package.json'])
+    .pipe(bump({version: newVer}))
+    .pipe(gulp.dest('./'))
+    .on('end', shell.task([
+            'git add --all',
+            'git commit -m "' + newVer + '"', 
+            'git tag v' + newVer,
+            'git push origin master', 
+            'git push origin --tags'
+           ]));
+
+});

@@ -1,0 +1,9 @@
+{
+  "name": "fatburnhub",
+  "root": "www",
+  "routes": {
+    "**": "index.html"
+  },
+  "clean_urls": true,
+  "error_page": "error.html"
+}

@@ -2,3 +2,4 @@ www/jspm_packages
 node_modules
 platforms
 plugins
+.divshot-cache
