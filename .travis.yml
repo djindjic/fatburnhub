@@ -11,6 +11,6 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: NLflGinOFxOWn3BRFXEofy0WkA+kPTdRKVZerApgkIuN54hyFZV17xqmyf03yIhfKEOSKfla+N4FiubRGkKOjVJSKfAu2eOZI9SYSjFtXldaoUUeS99iR5XKu2ec9uwdc8BIlRkdWU08NWeN94lKXcVS/0NByVnKy3GGV/lb2co=
-   on:
+  on:
     tags: true
     all_branches: true
