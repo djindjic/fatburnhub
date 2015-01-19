@@ -2,7 +2,6 @@ System.config({
   "paths": {
     "*": "*.js",
     "github:*": "jspm_packages/github/*.js",
-    "jspm_sample_project/*": "app/*.js",
     "fatburnhub/*": "app/*.js"
   }
 });

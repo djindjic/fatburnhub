@@ -11,7 +11,7 @@ var browsers = {
     platform: 'OS X 10.8',
     version: '6'
   },
-  sl_ie_11: {
+  sl_ie_9: {
     base: 'SauceLabs',
     browserName: 'internet explorer',
     platform: 'Windows 7',
@@ -31,8 +31,13 @@ module.exports = function(config) {
     frameworks: ['jspm', 'mocha', 'chai'],
 
     jspm: {
-        // Edit this to your needs
-        loadFiles: ['www/app/**/*.js', 'test/**/*.js']
+      // Edit this to your needs
+      loadFiles: ['www/app/**/*.spec.js'],
+      serveFiles: ['www/app/**/*.js', 'www/app/**/*.html']
+    },
+
+    proxies: {
+      '/base/jspm_packages/': '/base/www/jspm_packages/'
     },
 
     // list of files / patterns to load in the browser

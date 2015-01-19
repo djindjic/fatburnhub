@@ -7,5 +7,7 @@ dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef',
 	let syncObject = fbhFirebaseRef.syncObject('data');
 	syncObject.$bindTo($scope, 'data');
 
-	console.log(new Person({yearOfBirth:1980}).yearOfBirth);
+	let prs = new Person();
+	prs.age = 35;
+	console.log(prs.age);
 }]);
