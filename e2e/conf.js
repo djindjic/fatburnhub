@@ -8,7 +8,7 @@ exports.config = {
   // },
   //baseUrl: 'http://localhost:9000'
   capabilities: {
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    //'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
   	build: "1",
     platformName: 'iOS',
     platformVersion: '7.1',
