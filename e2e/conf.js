@@ -17,7 +17,6 @@ exports.config = {
     deviceName: 'iPhone Simulator',
     'appium-version': '1.2.1'
   },
-  
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
 
