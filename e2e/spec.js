@@ -1,14 +1,14 @@
-//var protractor = require('protractor');
+// var protractor = require('protractor');
 
-var flow = browser.promise.controlFlow();
+// var flow = protractor.promise.controlFlow();
 
-function waitOne() {
-  return browser.promise.delayed(15000);
-}
+// function waitOne() {
+//   return protractor.promise.delayed(15000);
+// }
 
-function sleep() {
-  return flow.execute(waitOne);
-}
+// function sleep() {
+//   return flow.execute(waitOne);
+// }
 
 describe('login', function() {
 	it('shoud login', function() {
@@ -39,7 +39,7 @@ describe('angularjs homepage todo list', function() {
   it('should add a todo', function() {
     browser.get('/');
 
-    sleep();
+    // sleep();
 
     element(by.css('#tab2')).click();
     element(by.model('data.greetMe')).clear().sendKeys('protractor');
