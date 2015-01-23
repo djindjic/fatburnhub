@@ -26,5 +26,13 @@ exports.config = {
   sauceKey: process.env.SAUCE_ACCESS_KEY,
 
   specs: ['spec.js'],
-  allScriptsTimeout: 99999,
+  //allScriptsTimeout: 99999,
+
+  jasmineNodeOpts: {
+	onComplete: null,
+	isVerbose: true,
+	showColors: true,
+	includeStackTrace: true,
+	defaultTimeoutInterval: 360000
+  },
 };
