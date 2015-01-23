@@ -22,6 +22,7 @@
     "karma-sinon": "^1.0.4",
     "mocha": "^2.1.0",
     "promise": "^6.0.1",
+    "protractor": "^1.6.1",
     "semver": "^4.2.0",
     "sinon": "^1.12.2"
   },
