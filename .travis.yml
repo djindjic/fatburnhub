@@ -2,12 +2,10 @@ language: node_js
 node_js:
 - '0.10'
 before_script:
-- npm install -g protractor
-- webdriver-manager update
 - node_modules/.bin/jspm install
-script: protractor e2e/conf.js
- # - node_modules/karma/bin/karma start karma.conf.js --single-run
- # - node_modules/protractor/bin/protractor e2e/conf.js
+script:
+ - node_modules/karma/bin/karma start karma.conf.js --single-run
+ - node_modules/protractor/bin/protractor e2e/conf.js
 deploy:
   provider: divshot
   environment:
