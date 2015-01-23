@@ -1,9 +1,9 @@
-var protractor = require('protractor');
+//var protractor = require('protractor');
 
-var flow = protractor.promise.controlFlow();
+var flow = browser.promise.controlFlow();
 
 function waitOne() {
-  return protractor.promise.delayed(15000);
+  return browser.promise.delayed(15000);
 }
 
 function sleep() {
