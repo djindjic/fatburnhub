@@ -6,7 +6,8 @@ exports.config = {
   //       args: ['--test-type']
   //   }
   // },
-  //baseUrl: 'http://localhost:9000'
+  // baseUrl: 'http://localhost:9000',
+  baseUrl: 'http://fatburnhub.com',
   capabilities: {
     //'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
   	// build: "1",

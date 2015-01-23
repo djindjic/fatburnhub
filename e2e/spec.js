@@ -12,7 +12,7 @@ function sleep() {
 
 describe('login', function() {
 	it('shoud login', function() {
-		browser.get('http://fatburnhub.com');
+		browser.get('/');
 
 		element(by.css('button[fbh-firebase-login=""]')).click();
 
