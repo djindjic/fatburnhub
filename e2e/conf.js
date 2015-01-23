@@ -9,13 +9,17 @@ exports.config = {
   //baseUrl: 'http://localhost:9000'
   capabilities: {
     //'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-  	build: "1",
-    platformName: 'iOS',
-    platformVersion: '7.1',
-    browserName: '',
-    app: 'safari',
-    deviceName: 'iPhone Simulator',
-    'appium-version': '1.2.1'
+  	// build: "1",
+   //  platformName: 'iOS',
+   //  platformVersion: '7.1',
+   //  browserName: '',
+   //  app: 'safari',
+   //  deviceName: 'iPhone Simulator',
+   //  'appium-version': '1.2.1'
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Linux',
+    version: '39'
   },
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
