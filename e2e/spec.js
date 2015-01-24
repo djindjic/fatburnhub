@@ -35,7 +35,7 @@ describe('login', function() {
 	});
 });
 
-describe('angularjs homepage todo list', function() {
+describe('change great me text', function() {
   it('should add a todo', function() {
     browser.get('/');
 
