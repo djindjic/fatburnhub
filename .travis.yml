@@ -7,9 +7,10 @@ script:
 - node_modules/karma/bin/karma start karma.conf.js --single-run
 - divshot push development -t $DIVSHOT_KEY
 - node_modules/protractor/bin/protractor --baseUrl='http://development.fatburnhub.com' e2e/conf.js
+- jspm bundle app/bootstrap www/bundle-$(uuidgen).js --inject --minify
 - divshot push staging -t $DIVSHOT_KEY
 - node_modules/protractor/bin/protractor --baseUrl='http://staging.fatburnhub.com' e2e/conf.js
-- divshot promote staging production
+- divshot push production -t $DIVSHOT_KEY
 # deploy:
 #   provider: divshot
 #   environment:
