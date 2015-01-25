@@ -5,8 +5,11 @@ before_script:
 - node_modules/.bin/jspm install
 script:
 - node_modules/karma/bin/karma start karma.conf.js --single-run
-- node_modules/protractor/bin/protractor e2e/conf.js
-- divshot push production -t $DIVSHOT_KEY
+- divshot push development -t $DIVSHOT_KEY
+- node_modules/protractor/bin/protractor --baseUrl='http://development.fatburnhub.com' e2e/conf.js
+- divshot push staging -t $DIVSHOT_KEY
+- node_modules/protractor/bin/protractor --baseUrl='http://staging.fatburnhub.com' e2e/conf.js
+- divshot promote staging production
 # deploy:
 #   provider: divshot
 #   environment:
