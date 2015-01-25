@@ -4,7 +4,7 @@ node_js:
 before_script:
 - jspm install
 script:
-- karma start karma.conf.js --single-run
+- node_modules/karma/bin/karma start karma.conf.js --single-run
 - divshot push development -t $DIVSHOT_KEY
 - protractor --baseUrl='http://development.fatburnhub.divshot.io/' e2e/conf.js
 - jspm bundle app/bootstrap www/bundle.$(date +%s | sha256sum | base64 | head -c30; echo).js --inject --minify
