@@ -1,1 +1,0 @@
-jspm bundle app/bootstrap www/bundle-$1.js --inject --minify
