@@ -1,7 +1,7 @@
 var capabilities = [
   {
     base: 'SauceLabs',
-    browserName: 'firefox',
+    browserName: 'chrome',
     platform: 'Linux',
     version: '35'
   },
