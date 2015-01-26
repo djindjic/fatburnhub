@@ -1,4 +1,4 @@
-var capabilities = [
+var capabilities = {
   sl_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -17,7 +17,7 @@ var capabilities = [
   //   platform: 'Windows 8.1',
   //   version: '11'
   // }
-];
+};
 
 var configuration = {
   // seleniumAddress: 'http://localhost:4444/wd/hub',

@@ -1,4 +1,4 @@
-var browsers = [
+var browsers = {
   sl_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
@@ -17,7 +17,7 @@ var browsers = [
   //   platform: 'Windows 8.1',
   //   version: '11'
   // }
-];
+};
 
 module.exports = function(config) {
   var configuration = {
