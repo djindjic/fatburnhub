@@ -3,19 +3,19 @@ var capabilities = [
     base: 'SauceLabs',
     browserName: 'firefox',
     platform: 'Linux',
-    version: '14'
+    version: '35'
   },
   {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.8',
-    version: '6'
+    platform: 'OS X 10.10',
+    version: '8'
   },
   {
     base: 'SauceLabs',
     browserName: 'internet explorer',
-    platform: 'Windows 7',
-    version: '9'
+    platform: 'Windows 8.1',
+    version: '11'
   }
 ];
 

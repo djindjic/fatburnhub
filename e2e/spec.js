@@ -40,7 +40,7 @@ describe('login', function() {
 });
 
 describe('change great me text', function() {
-  it('should add a todo', function() {
+  it('should change great', function() {
     browser.get('/');
 
     sleep();
