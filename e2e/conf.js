@@ -1,4 +1,4 @@
-var capabilities = require('./capabilities');
+var capabilities = require('capabilities');
 
 var configuration = {
   // seleniumAddress: 'http://localhost:4444/wd/hub',
