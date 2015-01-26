@@ -40,7 +40,7 @@ var configuration = {
 };
 if(process.env.TRAVIS){
   configuration.multiCapabilities = Object.keys(capabilities).map(function (key) {
-    return obj[key];
+    return capabilities[key];
   });
   configuration.sauceUser = process.env.SAUCE_USERNAME;
   configuration.sauceKey = process.env.SAUCE_ACCESS_KEY;
