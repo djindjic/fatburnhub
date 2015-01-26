@@ -1,38 +1,49 @@
-exports.config = {
-  // seleniumAddress: 'http://localhost:4444/wd/hub',
-  // capabilities: {
-  //   'browserName': 'chrome',
-  //   'chromeOptions': {
-  //       args: ['--test-type']
-  //   }
-  // },
-  // baseUrl: 'http://localhost:9000',
-  //baseUrl: 'http://fatburnhub.com',
-  multiCapabilities: [{
-    //'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-  	// build: "1",
-   //  platformName: 'iOS',
-   //  platformVersion: '7.1',
-   //  browserName: '',
-   //  app: 'safari',
-   //  deviceName: 'iPhone Simulator',
-   //  'appium-version': '1.2.1'
+var capabilities = {
+  sl_firefox: {
     base: 'SauceLabs',
-    browserName: 'chrome',
+    browserName: 'firefox',
     platform: 'Linux',
-    version: '39'
+    version: '14'
+  },
+  sl_ios_safari: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.8',
+    version: '6'
+  },
+  sl_ie_9: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    platform: 'Windows 7',
+    version: '9'
+  }
+};
+
+var configuration = {
+  // seleniumAddress: 'http://localhost:4444/wd/hub',
+  baseUrl: 'http://localhost:3474',
+  multiCapabilities: [{
+    'browserName': 'chrome',
+    'chromeOptions': {
+        args: ['--test-type']
+    }
   }],
-  sauceUser: process.env.SAUCE_USERNAME,
-  sauceKey: process.env.SAUCE_ACCESS_KEY,
 
   specs: ['spec.js'],
-  //allScriptsTimeout: 99999,
 
   jasmineNodeOpts: {
-	onComplete: null,
-	isVerbose: true,
-	showColors: true,
-	includeStackTrace: true,
-	defaultTimeoutInterval: 360000
+    onComplete: null,
+    isVerbose: true,
+    showColors: true,
+    includeStackTrace: true,
+    defaultTimeoutInterval: 360000
   },
 };
+if(process.env.TRAVIS){
+  configuration.multiCapabilities = capabilities;
+  configuration.sauceUser = process.env.SAUCE_USERNAME;
+  configuration.sauceKey = process.env.SAUCE_ACCESS_KEY;
+}
+
+
+exports.config = configuration;
