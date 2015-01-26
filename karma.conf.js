@@ -1,23 +1,4 @@
-var capabilities = {
-  sl_chrome: {
-    base: 'SauceLabs',
-    browserName: 'chrome',
-    platform: 'Linux',
-    version: '38'
-  }//,
-  // sl_ios_safari: {
-  //   base: 'SauceLabs',
-  //   browserName: 'safari',
-  //   platform: 'OS X 10.10',
-  //   version: '8'
-  // },
-  // sl_ie_9: {
-  //   base: 'SauceLabs',
-  //   browserName: 'internet explorer',
-  //   platform: 'Windows 8.1',
-  //   version: '11'
-  // }
-};
+var capabilities = require('./capabilities');
 
 module.exports = function(config) {
   var configuration = {
