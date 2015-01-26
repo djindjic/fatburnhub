@@ -1,23 +1,23 @@
-var browsers = {
-  sl_firefox: {
+var browsers = [
+  sl_chrome: {
     base: 'SauceLabs',
-    browserName: 'firefox',
+    browserName: 'chrome',
     platform: 'Linux',
-    version: '35'
-  },
-  sl_ios_safari: {
-    base: 'SauceLabs',
-    browserName: 'safari',
-    platform: 'OS X 10.10',
-    version: '8'
-  },
-  sl_ie_9: {
-    base: 'SauceLabs',
-    browserName: 'internet explorer',
-    platform: 'Windows 8.1',
-    version: '11'
-  }
-};
+    version: '38'
+  }//,
+  // sl_ios_safari: {
+  //   base: 'SauceLabs',
+  //   browserName: 'safari',
+  //   platform: 'OS X 10.10',
+  //   version: '8'
+  // },
+  // sl_ie_9: {
+  //   base: 'SauceLabs',
+  //   browserName: 'internet explorer',
+  //   platform: 'Windows 8.1',
+  //   version: '11'
+  // }
+];
 
 module.exports = function(config) {
   var configuration = {
