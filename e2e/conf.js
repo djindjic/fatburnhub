@@ -8,7 +8,7 @@ exports.config = {
   // },
   // baseUrl: 'http://localhost:9000',
   //baseUrl: 'http://fatburnhub.com',
-  capabilities: {
+  multiCapabilities: [{
     //'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
   	// build: "1",
    //  platformName: 'iOS',
@@ -21,7 +21,7 @@ exports.config = {
     browserName: 'chrome',
     platform: 'Linux',
     version: '39'
-  },
+  }],
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
 
