@@ -1,4 +1,4 @@
-exports.capabilities = {
+module.exports.capabilities = {
   sl_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
