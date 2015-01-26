@@ -21,7 +21,8 @@ describe('login', function() {
 		handlesPromise
 		.then(function(handles) {
 		   return browser.switchTo().window(handles[1]);
-		}).then(function(handle) {
+		})
+		.then(function(handle) {
 		  browser.driver.findElement(by.id('email')).sendKeys(process.env.FACEBOOK_USER);
 		  browser.driver.findElement(by.id('pass')).sendKeys(process.env.FACEBOOK_PASSWORD);
 		  browser.driver.findElement(by.name('login')).click();
@@ -32,6 +33,9 @@ describe('login', function() {
 		.then(function(handles) {
 		   return browser.switchTo().window(handles[0]);
 		})
+		.then(function() {
+		  expect(element(by.css('div[ng-show="fbsAuthCtrl.authentificated"]')).isDisplayed()).toBeTruthy();
+		});
 	});
 });
 
