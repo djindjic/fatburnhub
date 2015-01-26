@@ -1,4 +1,4 @@
-var capabilities = require('./capabilities.js');
+var capabilities = require('./capabilities.js').capabilities;
 
 module.exports = function(config) {
   var configuration = {
