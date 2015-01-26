@@ -9,7 +9,7 @@ var configuration = {
     }
   }],
 
-  specs: ['spec.js'],
+  specs: ['e2e/spec.js'],
 
   jasmineNodeOpts: {
     onComplete: null,
