@@ -1,11 +1,10 @@
-var capabilities = require('./capabilities.js').capabilities;
+var capabilities = require('./sauce_labs_capabilities.js').capabilities;
 
 module.exports = function(config) {
   var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -35,7 +34,6 @@ module.exports = function(config) {
     preprocessors: {
     },
 
-
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
@@ -58,7 +56,6 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
@@ -67,14 +64,13 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Chrome'],
 
-    customLaunchers: capabilities,
-
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
   };
 
   if(process.env.TRAVIS){
+    configuration.customLaunchers = capabilities;
     configuration.browsers = Object.keys(capabilities);
   }
 
