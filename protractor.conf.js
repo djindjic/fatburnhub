@@ -26,7 +26,7 @@ if(process.env.TRAVIS){
   configuration.sauceUser = process.env.SAUCE_USERNAME;
   configuration.sauceKey = process.env.SAUCE_ACCESS_KEY;
 } else {
-  configuration.baseUrl = 'http://localhost:3474';
+  configuration.baseUrl = 'http://localhost:9000';
 }
 
 exports.config = configuration;
