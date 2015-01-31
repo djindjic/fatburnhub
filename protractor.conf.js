@@ -3,10 +3,8 @@ var capabilities = require('./sauce_labs_capabilities.js').capabilities;
 var configuration = {
   // seleniumAddress: 'http://localhost:4444/wd/hub',
   multiCapabilities: [{
-    'browserName': 'chrome',
-    'chromeOptions': {
-        args: ['--test-type']
-    }
+    'browserName': 'firefox'//,
+    // 'browserName': 'chrome'
   }],
 
   specs: ['e2e/spec.js'],
