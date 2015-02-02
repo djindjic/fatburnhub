@@ -39,7 +39,7 @@
       "css": "^0.1.0",
       "fbh-firebase-util": "github:djindjic/fbh-firebase-util@^0.1.1",
       "hammer": "^2.0.4",
-      "metabolicjs": "github:djindjic/metabolicjs@^0.1.11",
+      "metabolicjs": "npm:metabolicjs@^0.1.11",
       "text": "^0.0.2"
     }
   }
