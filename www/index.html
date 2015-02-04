@@ -14,12 +14,12 @@
     <div layout="row" layout-align="end start" flex>
       <fbh-firebase-authentication-directive>
         <div ng-show="!fbsAuthCtrl.authentificated">
-          <md-button fbh-firebase-login class="md-fab" md-theme="cyan" aria-label="Profile">
+          <md-button fbh-firebase-login class="md-fab" aria-label="Profile">
             <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
           </md-button>
         </div>
         <div ng-show="fbsAuthCtrl.authentificated">
-          <md-button fbh-firebase-logout class="md-fab" md-theme="cyan" aria-label="Profile">
+          <md-button fbh-firebase-logout class="md-fab" aria-label="Profile">
             <img ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
           </md-button>
         </div>
