@@ -8,10 +8,13 @@
         display: none;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="styles/spinner.css">
+    <link rel="stylesheet" type="text/css" href="styles/material.css">
   </head>
   <body data-main-app ng-cloak layout="column" layout-fill>
-    <div layout="row" layout-align="end start" flex>
+    <div layout="row" layout-align="end start" flex="5">
+      <md-progress-linear md-mode="indeterminate" id="loader" style="display: none"></md-progress-linear>
+    </div>
+    <div layout="row" layout-align="end start" flex="5">
       <fbh-firebase-authentication-directive>
         <div ng-show="!fbsAuthCtrl.authentificated">
           <md-button fbh-firebase-login class="md-fab" aria-label="Profile">
@@ -28,12 +31,7 @@
     <div layout="row" layout-align="center center" flex>
       <div ui-view></div>
     </div>
-    <div id="loader" style="display: none">
-      <svg class="circular">
-        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
-      </svg>
-    </div>
-    <div layout="row" layout-align="end end" class="tabsdemoStaticTabs" flex>
+    <div layout="row" layout-align="center end" class="tabsdemoStaticTabs" flex="5">
       <md-tabs md-selected="selectedIndex">
         <md-tab label="diet" id="tab1" aria-controls="tab1-content" ui-sref="diet">
           <div ui-view="diet"></div>
