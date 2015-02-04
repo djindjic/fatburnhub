@@ -1,5 +1,5 @@
 import angular from 'angular';
-//import {Person} from 'metabolicjs';
+import {Person} from 'metabolicjs';
 
 export let dietControllerModule = angular.module('dietControllerModule', []);
 
@@ -10,7 +10,7 @@ dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef',
 	    angular.element(document.querySelector('#loader')).attr('style', 'display: none')
 	});
 
-	// let prs = new Person();
-	// prs.age = 35;
-	// console.log(prs.age);
+	let prs = new Person();
+	prs.age = 35;
+	console.log(prs.age);
 }]);
