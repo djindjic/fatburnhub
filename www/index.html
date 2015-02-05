@@ -8,7 +8,6 @@
         display: none;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="css/material.css">
   </head>
   <body data-main-app ng-cloak layout-fill layout="column">
     <md-toolbar layout="row">
@@ -51,6 +50,7 @@
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>
+      System.import('styles/material.css!');
       System.import('app/bootstrap');
     </script>
   </body>
