@@ -10,29 +10,36 @@
     </style>
     <link rel="stylesheet" type="text/css" href="styles/material.css">
   </head>
-  <body data-main-app ng-cloak layout="column" layout-fill>
-    <div layout="row" layout-align="end start" flex="5">
-      <md-progress-linear md-mode="indeterminate" id="loader" style="display: none"></md-progress-linear>
-    </div>
-    <div layout="row" layout-align="end start" flex="5">
-      <fbh-firebase-authentication-directive>
-        <div ng-show="!fbsAuthCtrl.authentificated">
-          <md-button fbh-firebase-login class="md-fab" aria-label="Profile">
-            <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
-          </md-button>
-        </div>
-        <div ng-show="fbsAuthCtrl.authentificated">
-          <md-button fbh-firebase-logout class="md-fab" aria-label="Profile">
-            <img ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
-          </md-button>
-        </div>
-      </fbh-firebase-authentication-directive>
-    </div>
-    <div layout="row" layout-align="center center" flex>
-      <div ui-view></div>
-    </div>
-    <div layout="row" layout-align="center end" class="tabsdemoStaticTabs" flex="5">
-      <md-tabs md-selected="selectedIndex">
+  <body data-main-app ng-cloak layout-fill layout="column">
+    <md-toolbar layout="row">
+      <div class="md-toolbar-tools">
+        <h3>
+          <span>Fat Burn Hub</span>
+        </h3>
+      </div>
+      <div class="login_button">
+        <fbh-firebase-authentication-directive>
+          <div ng-show="!fbsAuthCtrl.authentificated">
+            <md-button fbh-firebase-login class="md-fab" aria-label="Profile">
+              <md-icon icon="/images/facebook.svg" style="width: 24px; height: 24px;"></md-icon>
+            </md-button>
+          </div>
+          <div ng-show="fbsAuthCtrl.authentificated">
+            <md-button fbh-firebase-logout class="md-fab" aria-label="Profile">
+              <img class="login_image" ng-src="http://graph.facebook.com/{{fbsAuthCtrl.user.uid.split(':')[1]}}/picture"/>
+            </md-button>
+          </div>
+        </fbh-firebase-authentication-directive>
+      </div>
+    </md-toolbar>
+    <md-content layout="column" flex="89">
+      <md-progress-linear md-mode="indeterminate" id="loader" style="display: none" flex="5"></md-progress-linear>
+      <div layout="row" layout-align="center center" flex>
+        <div ui-view></div>
+      </div>
+    </md-content>
+    <md-content class="tabsdemoStaticTabs">
+      <md-tabs md-stretch-tabs="always" md-selected="selectedIndex">
         <md-tab label="diet" id="tab1" aria-controls="tab1-content" ui-sref="diet">
           <div ui-view="diet"></div>
         </md-tab>
@@ -40,7 +47,7 @@
           <div ui-view="training"></div>
         </md-tab>
       </md-tabs>
-    </div>
+    </md-content>
     <script src="jspm_packages/system.js"></script>
     <script src="config.js"></script>
     <script>

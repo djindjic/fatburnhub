@@ -1,3 +1,15 @@
 .top_loader {
   height: 10px;
 }
+.login_image {
+  margin-top: -6px;
+  width: 56px;
+  margin-left: -6px;
+}
+.login_button {
+  margin-top: 4px;
+  margin-right: 5px;
+}
+.footer {
+	padding: 0px 0px 0px 0px;
+}
