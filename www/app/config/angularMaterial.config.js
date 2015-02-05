@@ -6,7 +6,7 @@ export let angularMaterialConfigModule = angular.module('angularMaterialConfigMo
 ]);
 
 angularMaterialConfigModule.config(['$mdThemingProvider', function($mdThemingProvider) {
-  // $mdThemingProvider.theme('cyan')
-  //   .primaryPalette('pink')
-  //   .accentPalette('orange');
+  $mdThemingProvider.theme('default')
+    .primaryPalette('amber')
+    .accentPalette('light-green');
 }]);
