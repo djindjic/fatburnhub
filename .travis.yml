@@ -6,12 +6,12 @@ before_script:
   - jspm config endpoints.github.auth $JSPM_AUTH
   - jspm install
 script:
-  # - node_modules/karma/bin/karma start karma.conf.js --single-run
-  # - divshot push development -t $DIVSHOT_KEY
-  # - protractor --baseUrl='http://development.fatburnhub.divshot.io/' protractor.conf.js
+  - node_modules/karma/bin/karma start karma.conf.js --single-run
+  - divshot push development -t $DIVSHOT_KEY
+  - protractor --baseUrl='http://development.fatburnhub.divshot.io/' protractor.conf.js
   - jspm bundle app/bootstrap www/bundle/$(date +%s | sha256sum | base64 | head -c30; echo).js --inject --minify
   - rm -rf www/app
   - divshot push staging -t $DIVSHOT_KEY
-  # - protractor --baseUrl='http://staging.fatburnhub.divshot.io/' protractor.conf.js
+  - protractor --baseUrl='http://staging.fatburnhub.divshot.io/' protractor.conf.js
 after_success:
   - divshot promote staging production -t $DIVSHOT_KEY
