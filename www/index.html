@@ -8,7 +8,6 @@
         display: none;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="styles/material.css">
   </head>
   <body data-main-app ng-cloak layout-fill layout="column">
     <md-toolbar layout="row">
@@ -38,7 +37,7 @@
         <div ui-view></div>
       </div>
     </md-content>
-    <md-content class="tabsdemoStaticTabs">
+    <md-content>
       <md-tabs md-stretch-tabs="always" md-selected="selectedIndex">
         <md-tab label="diet" id="tab1" aria-controls="tab1-content" ui-sref="diet">
           <div ui-view="diet"></div>
