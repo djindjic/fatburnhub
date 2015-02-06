@@ -41,6 +41,31 @@
 
 describe('change great me text', function() {
   it('should change great', function() {
+
+    var mockModuleLogin = function() {
+      var mockLogin = angular.module('mockLoginModule', []);
+      mockLogin.factory('mocklogin', function() {
+        var mocklogin = function() {
+            var ref = new Firebase("fatburnhub.firebaseio.com");
+
+            ref.authWithPassword({
+              email    : process.env.USERNAME,
+              password : process.env.PASSWORD
+            }, function(error, authData) {
+              if (error) {
+                console.log("Login Failed!", error);
+              } else {
+                console.log("Authenticated successfully with payload:", authData);
+              }
+            });
+
+            return 'user is mocked logged in!'
+        };
+        return mocklogin;
+      });
+    };
+    browser.addMockModule('mockLoginModule', mockModuleLogin);
+
     browser.get('/');
 
     element(by.css('#tab2')).click();

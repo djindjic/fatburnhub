@@ -15,10 +15,21 @@ import {dietRouteModule} from './routes/diet/diet.route';
 import {trainingRouteModule} from './routes/training/training.route';
 
 export let mainModule = angular.module('fatburnhub', [
+  'mockLoginModule',
   angularMaterialConfigModule.name,
   mainConstantModule.name,
   mainConfigModule.name,
   fbhFirebaseUtilConfigModule.name,
   dietRouteModule.name,
   trainingRouteModule.name
-]).run();
+]).run(['mocklogin', function(mocklogin) {
+	console.log(mocklogin());
+}]);
+
+var mockLogin = angular.module('mockLoginModule', []);
+  mockLogin.factory('mocklogin', function() {
+    var mocklogin = function() {
+        return 'mocked login'
+    };
+    return mocklogin;
+  });
