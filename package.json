@@ -1,16 +1,11 @@
 {
   "name": "fatburnhub",
-  "version": "0.1.8",
+  "repository": "djindjic/fatburnhub",
   "devDependencies": {
     "chai": "^1.10.0",
-    "del": "^0.1.3",
     "divshot-cli": "^1.6.0",
     "gulp": "^3.8.10",
-    "gulp-bump": "^0.1.11",
     "gulp-load-plugins": "^0.7.1",
-    "gulp-shell": "^0.2.11",
-    "gulp-util": "^3.0.1",
-    "gulp-watch": "^3.0.0",
     "gulp-webserver": "^0.8.3",
     "jspm": "^0.11.0",
     "karma": "^0.12.28",
@@ -24,7 +19,6 @@
     "mocha": "^2.1.0",
     "promise": "^6.0.1",
     "protractor": "^1.6.1",
-    "semver": "^4.2.0",
     "sinon": "^1.12.2"
   },
   "jspm": {

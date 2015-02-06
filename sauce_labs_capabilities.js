@@ -1,10 +1,12 @@
+var pkg = require('./package.json');
+
 module.exports.capabilities = {
   sl_firefox: {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform: 'Linux',
     version: '38',
-    name: "faburnhub build " + process.env.TRAVIS_BUILD_NUMBER
+    name: pkg.name + " (build: " + process.env.TRAVIS_BUILD_NUMBER + ")"
   }
   // sl_ios_safari: {
   //   base: 'SauceLabs',
