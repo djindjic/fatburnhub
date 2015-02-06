@@ -3,7 +3,7 @@ module.exports.capabilities = {
     base: 'SauceLabs',
     browserName: 'chrome',
     platform: 'Linux',
-    version: '35',
+    version: '38',
     name: "faburnhub build " + process.env.TRAVIS_BUILD_NUMBER
   }
   // sl_ios_safari: {
