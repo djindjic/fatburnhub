@@ -1,9 +1,9 @@
 module.exports.capabilities = {
   sl_firefox: {
     base: 'SauceLabs',
-    browserName: 'firefox',
+    browserName: 'chrome',
     platform: 'Linux',
-    version: '31',
+    version: '35',
     name: "faburnhub build " + process.env.TRAVIS_BUILD_NUMBER
   }
   // sl_ios_safari: {
