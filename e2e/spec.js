@@ -49,8 +49,8 @@ describe('change great me text', function() {
             var ref = new Firebase("fatburnhub.firebaseio.com");
 
             ref.authWithPassword({
-              email    : process.env.USERNAME,
-              password : process.env.PASSWORD
+              email    : "bobtony@firebase.com",
+              password : "correcthorsebatterystaple"
             }, function(error, authData) {
               if (error) {
                 console.log("Login Failed!", error);
