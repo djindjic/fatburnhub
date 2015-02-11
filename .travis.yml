@@ -5,7 +5,7 @@ node_js:
 before_script:
   - npm install -g jspm
   - npm install -g protractor
-  - npm install -g karma
+  - npm install -g karma-cli
   - npm install -g divshot-cli
   - jspm config endpoints.github.auth $JSPM_AUTH
   - jspm install
