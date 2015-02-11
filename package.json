@@ -3,12 +3,9 @@
   "repository": "djindjic/fatburnhub",
   "devDependencies": {
     "chai": "^1.10.0",
-    "divshot-cli": "^1.6.0",
-    "gulp": "^3.8.10",
+    "gulp": "^3.8.11",
     "gulp-load-plugins": "^0.7.1",
     "gulp-webserver": "^0.8.3",
-    "jspm": "^0.13.0",
-    "karma": "^0.12.28",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.1.7",
     "karma-jspm": "^1.1.1",
@@ -18,7 +15,6 @@
     "karma-sinon": "^1.0.4",
     "mocha": "^2.1.0",
     "promise": "^6.0.1",
-    "protractor": "^1.6.1",
     "sinon": "^1.12.2"
   },
   "jspm": {
@@ -32,7 +28,7 @@
       "angular-ui-router": "^0.2.13",
       "css": "^0.1.0",
       "fbh-firebase-util": "npm:fbh-firebase-util@^0.1.1",
-      "metabolicjs": "npm:metabolicjs@^0.1.22",
+      "metabolicjs": "npm:metabolicjs@^0.1.1",
       "text": "^0.0.2"
     }
   }
