@@ -3,7 +3,10 @@ import {Person} from 'metabolicjs';
 
 export let dietControllerModule = angular.module('dietControllerModule', []);
 
-dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef', function ($scope, fbhFirebaseRef) {
+dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef', 'fbhFirebaseCurrenUser', function ($scope, fbhFirebaseRef, fbhFirebaseCurrenUser) {
+	fbhFirebaseCurrenUser.getCurrentUser().then(function(user) {
+		console.log(user.facebook.displayName);
+	});
 	let syncObject = fbhFirebaseRef.syncObject('data');
     angular.element(document.querySelector('#loader')).attr('style', 'display: block')
 	syncObject.$bindTo($scope, 'data').then(function(){
