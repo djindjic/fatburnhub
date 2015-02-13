@@ -1,4 +1,3 @@
-import template from './home.template.html!text';
 import angular from 'angular';
 import 'angular-ui-router';
 
