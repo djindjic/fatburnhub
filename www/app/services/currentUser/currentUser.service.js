@@ -1,7 +1,7 @@
 import angular from 'angular';
 import fbhFirebaseUtil from 'fbh-firebase-util';
 
-export var currentUserModule = angular.module('currentUserModule', [
+export let currentUserModule = angular.module('currentUserModule', [
   fbhFirebaseUtil.name
 ]).factory('CurrentUser', [
   '$q', 'fbhFirebaseCurrenUserService',

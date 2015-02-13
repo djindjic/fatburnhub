@@ -1,9 +1,14 @@
 import angular from 'angular';
 import {Person} from 'metabolicjs';
+import {currentUserModule} from 'app/services/currentUser/currentUser.service';
 
-export let dietControllerModule = angular.module('dietControllerModule', []);
+export let dietControllerModule = angular.module('dietControllerModule', [
+	currentUserModule.name
+]);
 
-dietControllerModule.controller('MyControllerDiet', ['$scope', 'fbhFirebaseRef', 'CurrentUser', function ($scope, fbhFirebaseRef, CurrentUser) {
+dietControllerModule.controller('DietController', ['$scope', 'fbhFirebaseRef', 'CurrentUser', function ($scope, fbhFirebaseRef, CurrentUser) {
+	let ctrl = this;
+
 	CurrentUser.get().then(function(name) {
 		console.log(name.facebook.displayName);
 	});

@@ -10,9 +10,6 @@ import {mainConfigModule} from './config/main.config';
 import {fbhFirebaseUtilConfigModule} from './config/fbhFirebaseUtil.config'
 import {angularMaterialConfigModule} from './config/angularMaterial.config';
 
-//services
-import {currentUserModule} from './services/currentUser/currentUser.service';
-
 //routes
 import {homeRouteModule} from './routes/home/home.route';
 import {dietRouteModule} from './routes/diet/diet.route';
@@ -24,7 +21,6 @@ export let mainModule = angular.module('fatburnhub', [
   mainConstantModule.name,
   mainConfigModule.name,
   fbhFirebaseUtilConfigModule.name,
-  currentUserModule.name,
   homeRouteModule.name,
   dietRouteModule.name,
   trainingRouteModule.name
