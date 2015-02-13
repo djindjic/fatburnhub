@@ -2,6 +2,9 @@
 import angular from 'angular';
 import 'angular-ui-router';
 
+//styles
+import './styles/material.css!';
+
 //constants
 import {mainConstantModule} from './constants/main.constant';
 
