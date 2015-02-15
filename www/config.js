@@ -1,4 +1,6 @@
 System.config({
+  "baseURL": "/",
+  "transpiler": "6to5",
   "paths": {
     "*": "*.js",
     "github:*": "jspm_packages/github/*.js",
@@ -125,10 +127,6 @@ System.config({
     },
     "npm:events-browserify@0.0.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"
-    },
-    "npm:fbh-firebase-util@0.1.16": {
-      "angular": "github:angular/bower-angular@1.3.13",
-      "angularfire": "github:firebase/angularfire@0.9.2"
     },
     "npm:fbh-firebase-util@0.1.17": {
       "angular": "github:angular/bower-angular@1.3.13",
