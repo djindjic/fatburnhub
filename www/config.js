@@ -1,6 +1,6 @@
 System.config({
   "baseURL": "/",
-  //"transpiler": "6to5",
+  "transpiler": "6to5",
   "paths": {
     "*": "*.js",
     "github:*": "jspm_packages/github/*.js",
