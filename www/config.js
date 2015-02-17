@@ -14,7 +14,7 @@ System.config({
     "angular": "github:angular/bower-angular@1.3.13",
     "angular-material": "github:angular/bower-material@0.7.1",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
-    "css": "github:systemjs/plugin-css@0.1.5",
+    "css": "github:systemjs/plugin-css@0.1.6",
     "fbh-firebase-util": "npm:fbh-firebase-util@0.1.17",
     "metabolicjs": "npm:metabolicjs@0.1.31",
     "text": "github:systemjs/plugin-text@0.0.2",
@@ -31,7 +31,7 @@ System.config({
       "angular": "github:angular/bower-angular@1.3.13",
       "angular-animate": "github:angular/bower-angular-animate@1.3.13",
       "angular-aria": "github:angular/bower-angular-aria@1.3.13",
-      "css": "github:systemjs/plugin-css@0.1.5"
+      "css": "github:systemjs/plugin-css@0.1.6"
     },
     "github:aurelia/dependency-injection@0.4.2": {
       "aurelia-metadata": "github:aurelia/metadata@0.3.1",
@@ -82,9 +82,10 @@ System.config({
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
     },
-    "github:systemjs/plugin-css@0.1.5": {
+    "github:systemjs/plugin-css@0.1.6": {
       "clean-css": "npm:clean-css@3.0.10",
-      "fs": "github:jspm/nodelibs-fs@0.1.1"
+      "fs": "github:jspm/nodelibs-fs@0.1.1",
+      "path": "github:jspm/nodelibs-path@0.1.0"
     },
     "npm:amdefine@0.1.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.1",
