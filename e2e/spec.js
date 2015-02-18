@@ -68,22 +68,22 @@ describe('change great me text', function() {
 
     browser.get('/');
 
-    element(by.css('#tab2')).click();
-    browser.wait(function() {
-	  return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
-	}, 20000);
-    element(by.model('data.greetMe')).clear().sendKeys('protractor');
-
-    element(by.css('#tab1')).click();
-    browser.wait(function() {
-	  return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
-	}, 20000);
-    expect(element(by.css('#greetResult')).getText()).toEqual('protractor');
-
-    element(by.css('#tab2')).click();
-    browser.wait(function() {
-	  return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
-	}, 20000);
-    element(by.model('data.greetMe')).clear().sendKeys('facebook');
+    // element(by.css('#tab2')).click();
+    // browser.wait(function() {
+  	//   return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
+  	// }, 20000);
+    //   element(by.model('data.greetMe')).clear().sendKeys('protractor');
+    //
+    //   element(by.css('#tab1')).click();
+    //   browser.wait(function() {
+  	//   return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
+  	// }, 20000);
+    //   expect(element(by.css('#greetResult')).getText()).toEqual('protractor');
+    //
+    //   element(by.css('#tab2')).click();
+    //   browser.wait(function() {
+  	//   return element(by.css('#loader')).isDisplayed().then(function(result){return !result});
+  	// }, 20000);
+    // element(by.model('data.greetMe')).clear().sendKeys('facebook');
   });
 });
