@@ -14,27 +14,25 @@ import {fbhFirebaseUtilConfigModule} from './config/fbhFirebaseUtil.config'
 import {angularMaterialConfigModule} from './config/angularMaterial.config';
 
 //routes
-import {homeRouteModule} from './routes/home/home.route';
-import {dietRouteModule} from './routes/diet/diet.route';
-import {trainingRouteModule} from './routes/training/training.route';
+import {planRouteModule} from './routes/plan/plan.route';
+import {dataRouteModule} from './routes/data/data.route';
 
 export let mainModule = angular.module('fatburnhub', [
   'mockLoginModule',
-  angularMaterialConfigModule.name,
   mainConstantModule.name,
+  angularMaterialConfigModule.name,
   mainConfigModule.name,
   fbhFirebaseUtilConfigModule.name,
-  homeRouteModule.name,
-  dietRouteModule.name,
-  trainingRouteModule.name
+  planRouteModule.name,
+  dataRouteModule.name
 ]).run(['mocklogin', function(mocklogin) {
 	console.log(mocklogin());
 }]);
 
 var mockLogin = angular.module('mockLoginModule', []);
-  mockLogin.factory('mocklogin', function() {
-    var mocklogin = function() {
-        return 'mocked login'
-    };
-    return mocklogin;
-  });
+mockLogin.factory('mocklogin', function() {
+  var mocklogin = function() {
+    return 'mocked login'
+  };
+  return mocklogin;
+});

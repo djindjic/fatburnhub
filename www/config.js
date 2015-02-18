@@ -1,10 +1,9 @@
 System.config({
   "baseURL": "/",
-  "transpiler": "6to5",
+  "transpiler": "traceur",
   "paths": {
     "*": "*.js",
     "github:*": "jspm_packages/github/*.js",
-    "fatburnhub/*": "app/*.js",
     "npm:*": "jspm_packages/npm/*.js"
   }
 });
@@ -15,7 +14,7 @@ System.config({
     "angular-material": "github:angular/bower-material@0.7.1",
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
     "css": "github:systemjs/plugin-css@0.1.6",
-    "fbh-firebase-util": "npm:fbh-firebase-util@0.1.17",
+    "fbh-firebase-util": "npm:fbh-firebase-util@0.1.18",
     "metabolicjs": "npm:metabolicjs@0.1.31",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.13": {
@@ -133,6 +132,10 @@ System.config({
       "angular": "github:angular/bower-angular@1.3.13",
       "angularfire": "github:firebase/angularfire@0.9.2"
     },
+    "npm:fbh-firebase-util@0.1.18": {
+      "angular": "github:angular/bower-angular@1.3.13",
+      "angularfire": "github:firebase/angularfire@0.9.2"
+    },
     "npm:https-browserify@0.0.0": {
       "http": "github:jspm/nodelibs-http@1.7.0"
     },
@@ -190,4 +193,3 @@ System.config({
     }
   }
 });
-

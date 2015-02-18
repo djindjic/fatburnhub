@@ -3,10 +3,10 @@ sudo: false
 node_js:
   - '0.12'
 before_script:
-  - npm install -fg jspm
-  - npm install -fg protractor
-  - npm install -fg karma-cli
-  - npm install -fg divshot-cli
+  - npm install -g jspm
+  - npm install -g protractor
+  - npm install -g karma-cli
+  - npm install -g divshot-cli
   - jspm config endpoints.github.auth $JSPM_AUTH
   - jspm install
 script:

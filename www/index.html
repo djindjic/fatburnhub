@@ -10,6 +10,23 @@
     </style>
   </head>
   <body data-main-app ng-cloak layout-fill layout="column">
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '838863859471935',
+          xfbml      : true,
+          version    : 'v2.1'
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
     <!--[if lt IE 10]>
       <div>
         <h1>You are using an outdated browser.</h1>
@@ -26,7 +43,7 @@
     <md-toolbar layout="row">
       <div class="md-toolbar-tools">
         <h3>
-          <a href="" ui-sref="authRequired.home.index"><span>Fat Burn Hub</span></a>
+          <span>Fat Burn Hub</span>
         </h3>
       </div>
       <div class="login_button">
@@ -52,11 +69,11 @@
     </md-content>
     <md-content>
       <md-tabs md-stretch-tabs="always" md-selected="selectedIndex">
-        <md-tab label="diet" id="tab1" aria-controls="tab1-content" ui-sref="diet">
-          <div ui-view="diet"></div>
+        <md-tab label="plan" id="tab1" aria-controls="tab1-content" ui-sref="base.plan">
+          <div ui-view="plan"></div>
         </md-tab>
-        <md-tab label="training" id="tab2" aria-controls="tab2-content" ui-sref="training">
-          <div ui-view="training"></div>
+        <md-tab label="data" id="tab2" aria-controls="tab2-content" ui-sref="base.data">
+          <div ui-view="data"></div>
         </md-tab>
       </md-tabs>
     </md-content>
