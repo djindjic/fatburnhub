@@ -12,8 +12,7 @@ planControllerModule.controller('planController', ['$scope', 'fbhFirebaseRef', '
 	FB.api(
 		"/me",
 		{
-			access_token: currentUser.facebook.accessToken,
-			fields: 'name'
+			access_token: currentUser.facebook.accessToken
 		},
 		function (response) {
 			console.log(response);
