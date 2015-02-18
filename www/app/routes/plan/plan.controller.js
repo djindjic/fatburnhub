@@ -9,19 +9,6 @@ planControllerModule.controller('planController', ['$scope', 'fbhFirebaseRef', '
 
 	console.log(currentUser);
 
-	FB.api(
-		"/me",
-		{
-			access_token: currentUser.facebook.accessToken
-		},
-		function (response) {
-			console.log(response);
-			if (response && !response.error) {
-
-			}
-		}
-	);
-
 	ctrl.person = currentUser;
 
 	// let syncObject = fbhFirebaseRef.syncObject('data');
