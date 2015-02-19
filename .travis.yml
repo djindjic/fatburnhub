@@ -16,7 +16,7 @@ script:
   - jspm bundle app/bootstrap www/bundle/$(date +%s | sha256sum | base64 | head -c30; echo).js --inject --minify
   - gulp bust-config
   - rm -rf www/app
-  - rm config.js
+  - rm www/config.js
   - divshot push staging -t $DIVSHOT_KEY
   - protractor --baseUrl='http://staging.fatburnhub.divshot.io/' protractor.conf.js
 after_success:
