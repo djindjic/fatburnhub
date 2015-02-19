@@ -4,6 +4,7 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "gulp": "^3.8.11",
+    "gulp-cachebust": "0.0.3",
     "gulp-load-plugins": "^0.7.1",
     "gulp-webserver": "^0.8.3",
     "karma": "^0.12.28",

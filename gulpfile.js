@@ -1,6 +1,7 @@
-var Promise = require('promise'),
-    gulp    = require('gulp'),
-    $       = require('gulp-load-plugins')();
+var Promise   = require('promise'),
+    gulp      = require('gulp'),
+    $         = require('gulp-load-plugins')();
+    cachebust = new $.cachebust;
 
 var startServer = function(){
   return new Promise(function (fulfil) {
@@ -19,3 +20,15 @@ gulp.task('default',
     startServer();
   }
 );
+
+gulp.task('build-html', function () {
+  return gulp.src('www/config.js')
+      .pipe(cachebust.resources())
+      .pipe(gulp.dest('www'));
+});
+
+gulp.task('bust-config', ['build-html'], function () {
+  return gulp.src('www/index.html')
+      .pipe(cachebust.references())
+      .pipe(gulp.dest('www'));
+});
