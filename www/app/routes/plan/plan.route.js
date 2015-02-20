@@ -15,7 +15,7 @@ export let planRouteModule = angular.module('planRouteModule', [
         'selectedTab': 0
       },
       template: template,
-      controller: 'planController',
+      controller: 'PlanController',
       controllerAs: 'plan'
     });
   }

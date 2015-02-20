@@ -22,6 +22,16 @@ export let baseRouteModule = angular.module('baseRouteModule', [
           function currentUserResolver(CurrentUser) {
             return CurrentUser.get();
           }
+        ],
+        currentPerson: [
+          'CurrentUser',
+          function currentPersonResolver(CurrentUser) {
+            return CurrentUser.person().then(function(prs) {
+              return prs;
+            }, function() {
+              return null;
+            });
+          }
         ]
       }
     });

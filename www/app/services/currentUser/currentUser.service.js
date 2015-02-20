@@ -4,8 +4,8 @@ import fbhFirebaseUtil from 'fbh-firebase-util';
 export let currentUserModule = angular.module('currentUserModule', [
   fbhFirebaseUtil.name
 ]).factory('CurrentUser', [
-  '$q', 'fbhFirebaseCurrenUserService',
-  function CurrentUser($q, fbhFirebaseCurrenUserService) {
+  '$q', 'fbhFirebaseCurrenUserService', 'fbhFirebaseRef',
+  function CurrentUser($q, fbhFirebaseCurrenUserService, fbhFirebaseRef) {
     function get() {
       var deferred = $q.defer();
 
@@ -18,8 +18,27 @@ export let currentUserModule = angular.module('currentUserModule', [
       return deferred.promise;
     }
 
+    function person() {
+      var deferred = $q.defer();
+
+      this.get().then(function(user) {
+        if (user) {
+          fbhFirebaseRef.ref(`persons/${user.uid}`).on('value', function(snapshot) {
+            deferred.resolve(
+              snapshot.val()
+            );
+          });
+        } else {
+          deferred.reject(null);
+        }
+      });
+
+      return deferred.promise;
+    }
+
     return {
-      get: get
+      get: get,
+      person: person
     };
   }
 ]);

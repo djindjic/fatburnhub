@@ -17,6 +17,9 @@ import {angularMaterialConfigModule} from './config/angularMaterial.config';
 import {planRouteModule} from './routes/plan/plan.route';
 import {dataRouteModule} from './routes/data/data.route';
 
+//components
+import {fbhMainTabsDirectiveModule} from './components/fbhMainTabs/fbhMainTabs.directive';
+
 export let mainModule = angular.module('fatburnhub', [
   'mockLoginModule',
   mainConstantModule.name,
@@ -24,7 +27,8 @@ export let mainModule = angular.module('fatburnhub', [
   mainConfigModule.name,
   fbhFirebaseUtilConfigModule.name,
   planRouteModule.name,
-  dataRouteModule.name
+  dataRouteModule.name,
+  fbhMainTabsDirectiveModule.name
 ]).run(['mocklogin', function(mocklogin) {
 	console.log(mocklogin());
 }]);

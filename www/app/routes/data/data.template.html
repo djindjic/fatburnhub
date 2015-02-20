@@ -1,1 +1,30 @@
-data
+<form name="projectForm">
+  <md-input-container>
+    <label>Age</label>
+    <input required name="age" ng-model="data.person._age" ng-change="data.savePerson()">
+    <div ng-messages="projectForm.age.$error">
+      <div ng-message="required">This is required.</div>
+    </div>
+  </md-input-container>
+  <md-input-container>
+    <label>Gender</label>
+    <input required name="gender" ng-model="data.person._gender" ng-change="data.savePerson()">
+    <div ng-messages="projectForm.gender.$error">
+      <div ng-message="required">This is required.</div>
+    </div>
+  </md-input-container>
+  <md-input-container>
+    <label>Height</label>
+    <input required name="height" ng-model="data.person._height" ng-change="data.savePerson()">
+    <div ng-messages="projectForm.height.$error">
+      <div ng-message="required">This is required.</div>
+    </div>
+  </md-input-container>
+  <md-input-container>
+    <label>Weight</label>
+    <input required name="weight" ng-model="data.person._weight" ng-change="data.savePerson()">
+    <div ng-messages="projectForm.weight.$error">
+      <div ng-message="required">This is required.</div>
+    </div>
+  </md-input-container>
+</form>
