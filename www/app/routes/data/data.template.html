@@ -7,11 +7,14 @@
     </div>
   </md-input-container>
   <md-input-container>
-    <label>Gender</label>
-    <input required name="gender" ng-model="data.person._gender" ng-change="data.savePerson()">
-    <div ng-messages="projectForm.gender.$error">
-      <div ng-message="required">This is required.</div>
-    </div>
+    <md-radio-group ng-model="data.person._gender" ng-change="data.savePerson()" layout="row">
+      <md-radio-button value="male">
+        Male
+      </md-radio-button>
+      <md-radio-button value="female">
+        Female
+      </md-radio-button>
+    </md-radio-group>
   </md-input-container>
   <md-input-container>
     <label>Height</label>
