@@ -16,7 +16,7 @@ System.config({
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.3",
     "css": "github:systemjs/plugin-css@0.1.6",
-    "fbh-firebase-util": "npm:fbh-firebase-util@0.1.21",
+    "fbh-firebase-util": "npm:fbh-firebase-util@0.1.22",
     "metabolicjs": "npm:metabolicjs@0.1.31",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.13": {
@@ -130,7 +130,7 @@ System.config({
     "npm:events-browserify@0.0.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:fbh-firebase-util@0.1.21": {
+    "npm:fbh-firebase-util@0.1.22": {
       "angular": "github:angular/bower-angular@1.3.13",
       "angularfire": "github:firebase/angularfire@0.9.2"
     },
