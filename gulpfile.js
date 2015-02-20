@@ -21,14 +21,24 @@ gulp.task('default',
   }
 );
 
-gulp.task('build-html', function () {
+gulp.task('bust-config', function () {
   return gulp.src('www/config.js')
       .pipe(cachebust.resources())
+      .pipe($.uglify())
       .pipe(gulp.dest('www'));
 });
 
-gulp.task('bust-config', ['build-html'], function () {
+gulp.task('build-index', ['bust-config'], function () {
   return gulp.src('www/index.html')
       .pipe(cachebust.references())
+      .pipe($.htmlmin({
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        minifyJS: true,
+        minifyCSS: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeComments: true
+      }))
       .pipe(gulp.dest('www'));
 });
