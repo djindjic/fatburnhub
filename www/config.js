@@ -16,7 +16,7 @@ System.config({
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.3",
     "css": "github:systemjs/plugin-css@0.1.6",
-    "fbh-firebase-util": "npm:fbh-firebase-util@dev",
+    "fbh-firebase-util": "npm:fbh-firebase-util@0.1.21",
     "metabolicjs": "npm:metabolicjs@0.1.31",
     "text": "github:systemjs/plugin-text@0.0.2",
     "github:angular-ui/ui-router@0.2.13": {
@@ -46,7 +46,7 @@ System.config({
       "assert": "npm:assert@1.3.0"
     },
     "github:jspm/nodelibs-buffer@0.1.0": {
-      "buffer": "npm:buffer@3.0.2"
+      "buffer": "npm:buffer@3.0.3"
     },
     "github:jspm/nodelibs-events@0.1.0": {
       "events-browserify": "npm:events-browserify@0.0.1"
@@ -97,7 +97,7 @@ System.config({
     "npm:assert@1.3.0": {
       "util": "npm:util@0.10.3"
     },
-    "npm:buffer@3.0.2": {
+    "npm:buffer@3.0.3": {
       "base64-js": "npm:base64-js@0.0.8",
       "ieee754": "npm:ieee754@1.1.4",
       "is-array": "npm:is-array@1.0.1"
@@ -130,7 +130,7 @@ System.config({
     "npm:events-browserify@0.0.1": {
       "process": "github:jspm/nodelibs-process@0.1.1"
     },
-    "npm:fbh-firebase-util@dev": {
+    "npm:fbh-firebase-util@0.1.21": {
       "angular": "github:angular/bower-angular@1.3.13",
       "angularfire": "github:firebase/angularfire@0.9.2"
     },
@@ -142,7 +142,7 @@ System.config({
     },
     "npm:metabolicjs@0.1.31": {
       "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.3",
-      "decimal.js": "github:MikeMcl/decimal.js@4.0.1",
+      "decimal.js": "github:MikeMcl/decimal.js@4.0.2",
       "forwardablejs": "npm:forwardablejs@0.1.68"
     },
     "npm:os-browserify@0.1.2": {
