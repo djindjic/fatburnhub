@@ -1,7 +1,6 @@
 //vendor
 import angular from 'angular';
 import 'angular-ui-router';
-import 'famous';
 import 'famous-angular';
 
 //styles

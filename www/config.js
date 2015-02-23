@@ -15,7 +15,6 @@ System.config({
     "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
     "aurelia-dependency-injection": "github:aurelia/dependency-injection@0.4.3",
     "css": "github:systemjs/plugin-css@0.1.6",
-    "famous": "github:Famous/famous@0.3.5",
     "famous-angular": "github:Famous/famous-angular@0.5.2",
     "fbh-firebase-util": "npm:fbh-firebase-util@0.1.22",
     "metabolicjs": "npm:metabolicjs@0.1.31",
